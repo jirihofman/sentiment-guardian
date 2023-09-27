@@ -1,0 +1,19 @@
+{
+	"presets": [
+		"next/babel"
+	],
+	"env": {
+		"test": {
+			// Used for instrumenting code for Cypress components tests.
+			"plugins": [
+				["istanbul", {
+					"exclude": [
+						"**/node_modules/**",
+						"**/middleware.js",
+						"**/test/**"
+					]
+				}, "some unique name"]
+			]
+		}
+	},
+}

@@ -1,0 +1,116 @@
+# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+
+name: Node.js CI
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+env:
+  # Replaces the value set in .env.test.local
+  NEXT_PUBLIC_NODE_ENV: test
+  # Replaces the value set in .env.test.local
+  # DB stuff. There is a default mysql server with root/root. See https://ovirium.com/blog/how-to-make-mysql-work-in-your-github-actions/
+  MYSQL_URI: "mysql://root:root@127.0.0.1:3306/nfat2?synchronize=false&charset=utf8mb4"
+  DB_DATABASE: nfat2
+  DB_USER: root
+  DB_PASSWORD: root
+  GPR_TOKEN: ${{ secrets.GPR_TOKEN }}
+  NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
+  CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    # strategy:
+    #   matrix:
+    #     node-version: [16.x]
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+    steps:
+    - name: Set up MySQL
+      run: |
+        sudo /etc/init.d/mysql start
+        echo "MySQL started"
+        mysql -e 'SHOW DATABASES;' -u${{ env.DB_USER }} -p${{ env.DB_PASSWORD }}
+        echo "MySQL default databases"
+        mysql -e 'CREATE DATABASE ${{ env.DB_DATABASE }};' -u${{ env.DB_USER }} -p${{ env.DB_PASSWORD }}
+        echo "MySQL new database created"
+        mysql -e 'SHOW DATABASES;' -u${{ env.DB_USER }} -p${{ env.DB_PASSWORD }}
+        echo "MySQL default databases with the new one"
+        mysql -e 'ALTER USER "root"@"localhost" IDENTIFIED WITH mysql_native_password BY "${{ env.DB_PASSWORD }}";' -u${{ env.DB_USER }} -p${{ env.DB_PASSWORD }}
+        echo "MySQL user changed to be able to auth using username/password"
+    - uses: actions/checkout@v3
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+    - uses: actions/cache@v3
+      with:
+        # See here for caching with `yarn` https://github.com/actions/cache/blob/main/examples.md#node---yarn or you can leverage caching with actions/setup-node https://github.com/actions/setup-node
+        path: |
+          ~/.npm
+          ${{ github.workspace }}/.next/cache
+        # Generate a new cache whenever packages or source files change.
+        key: ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('**.[jt]s', '**.[jt]sx') }}
+        # If source files changed but packages didn't, rebuild from a prior cache.
+        restore-keys: |
+          ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-
+    - name: Install 🛠
+      env:
+        # GH_TOKEN for @jirihofman/react-profile package
+        GH_TOKEN: ${{ github.token }}
+      run: npm ci
+    # TODO: Replace Knex migrations with an ORM
+    # - name: Knex migrations 💾
+    #   run: |
+    #     npm run migrate:latest
+    #     npm run seed:run
+
+    # - name: Test 🧪
+    #   env:
+    #     GH_TOKEN: ${{ github.token }}
+    #   run: |
+    #     echo Run all the sh!t with a single command runnable on devs' machines
+    #     npm run test:ci
+    # - name: End to end tests run 🧪
+    #   uses: cypress-io/github-action@v5.0.2
+    #   with:
+    #     # we have already installed all dependencies above
+    #     install: false
+    #     build: npm run build
+    #     start: npm run start
+    #     wait-on: 'http://localhost:5100/api/status'
+    #     wait-on-timeout: 20
+    #     browser: chrome
+    #     config: 'baseUrl=http://localhost:5100'
+    - run: npm run pretest
+    - run: npm run test:coverage:prepare-folders
+    - run: npm run test:coverage:jest
+    - run: npm run test:coverage:component
+    
+    #- run: npm run test:db:clear
+    #- run: npm run test:db:init
+    - run: npm run test:build
+    - run: npm run test:start & npm run test:wait-on
+    - run: npm run test:cy:run
+
+    - run: npm run posttest
+    - run: npm run report:combined
+    - name: Upload coverage reports to Codecov
+      uses: codecov/codecov-action@v3
+    # there might be no screenshots and videos created when there are no test failures
+    # so only upload screenshots if previous step has failed
+    - uses: actions/upload-artifact@v3
+      if: failure()
+      with:
+        name: screenshots
+        path: cypress/screenshots
+    - uses: actions/upload-artifact@v3
+      if: failure()
+      with:
+        name: videos
+        path: cypress/videos
