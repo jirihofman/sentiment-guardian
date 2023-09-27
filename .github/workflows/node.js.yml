@@ -60,9 +60,6 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-
     - name: Install 🛠
-      env:
-        # GH_TOKEN for @jirihofman/react-profile package
-        GH_TOKEN: ${{ github.token }}
       run: npm ci
     # TODO: Replace Knex migrations with an ORM
     # - name: Knex migrations 💾
