@@ -1,7 +1,7 @@
 'use client';
 
 import pjson from '../../package.json';
-import { Container, Modal, Nav, NavDropdown, Navbar } from 'react-bootstrap';
+import { Container, Modal, Nav, Navbar } from 'react-bootstrap';
 import Link from 'next/link';
 
 export default function Header() {
@@ -15,23 +15,15 @@ export default function Header() {
                 <Container fluid>
                     <Navbar.Toggle aria-controls="navbarScroll" />
                     <Navbar.Brand href="/">{pjson.displayName}</Navbar.Brand>
-                    <Navbar.Collapse id="navbarScroll">
-                        <Nav className='me-auto'>
-                            <Link
-                                passHref
-                                href="https://github.com/jirihofman/nextjs-fullstack-app-template"
-                                legacyBehavior><Nav.Link>GitHub</Nav.Link></Link>
+                    <Nav className='me-auto'>
+                        <Link
+                            passHref
+                            href="https://github.com/jirihofman/nextjs-fullstack-app-template"
+                            legacyBehavior><Nav.Link>GitHub</Nav.Link></Link>
 
-                            <NavDropdown title={'Site'}>
-                                <Link passHref href="/faq" legacyBehavior><NavDropdown.Item>FAQ</NavDropdown.Item></Link>
-                                <NavDropdown.Divider />
-
-                                <NavDropdown.Divider />
-                                <NavDropdown.Item role='button' data-bs-toggle='modal' data-bs-target='#exampleModal'>About</NavDropdown.Item>
-                            </NavDropdown>
-                        </Nav>
-                            
-                    </Navbar.Collapse>
+                        <Link passHref href="/faq" legacyBehavior><Nav.Link>FAQ</Nav.Link></Link>
+                        <Nav.Link role='button' data-bs-toggle='modal' data-bs-target='#exampleModal'>About</Nav.Link>
+                    </Nav>
                 </Container>
             </Navbar>
 

@@ -1,66 +1,101 @@
-'use client';
+// import Link from 'next/link';
+// import Image from 'next/image';
+import xml2js from 'xml2js';
+import range from 'lodash/range';
 
-import { Button, Container, Badge } from 'react-bootstrap';
-import { BookHalf } from 'react-bootstrap-icons';
-import Link from 'next/link';
-import Image from 'next/image';
-import packageLock from '../../package-lock.json';
+const Feature = async () => {
 
-const Feature = () => {
-    const w = '40';
-    const features = [
-        {
-            buttons: [
-                <Link key={1} passHref href="https://nextjs.org/" legacyBehavior><Button className='m-1' variant="primary"><BookHalf className='bi' /> Nextjs {VersionBadge('next')}</Button></Link>,
-            ],
-            desc: 'Nextjs framework.',
-            img: <Image
-                alt=''
-                height={w}
-                width={w}
-                src='https://camo.githubusercontent.com/f21f1fa29dfe5e1d0772b0efe2f43eca2f6dc14f2fede8d9cbef4a3a8210c91d/68747470733a2f2f6173736574732e76657263656c2e636f6d2f696d6167652f75706c6f61642f76313636323133303535392f6e6578746a732f49636f6e5f6c696768745f6261636b67726f756e642e706e67'
-            />,
-            title: 'Nextjs',
-        }, {
-            buttons: [
-                <Link key={1} passHref href="https://getbootstrap.com/" legacyBehavior><Button className='m-1' variant="primary"><BookHalf className='bi' /> Bootstrap {VersionBadge('bootstrap')}</Button></Link>,
-                <Link key={2} passHref href="https://react-bootstrap.github.io/" legacyBehavior><Button className='m-1' variant="primary"><BookHalf className='bi' /> React Bootstrap {VersionBadge('react-bootstrap')}</Button></Link>,
-            ],
-            desc: 'Bootstrap 5 + React Bootstrap.',
-            img: <Image
-                alt=''
-                height={w}
-                width={w}
-                src='https://raw.githubusercontent.com/react-bootstrap/react-bootstrap/7c66098610ea7aea89edfe38988990ba8abcd31d/www/static/logo.svg'
-            />,
-            title: 'React Bootstrap',
-        },
-    ];
+    // TODO: Load them from the database instead. The sentiment should be calculated there already.
+    const rss = await fetch('https://www.theguardian.com/international/rss').then(res => res.text());
+    // await new Promise(r => setTimeout(r, 1100));
+    // process the xml in nodejs runtime
+    const result = await xml2js.parseStringPromise(rss /*, options */);
+    const items = result.rss.channel[0].item;
+    const articles = [];
+    items.forEach(item => {
+        const article = {
+            creator: item['dc:creator'][0],
+            // Format: YYYY-MM-DD HH:MM
+            date: item['dc:date'][0].split('T').join(' ').split(':').slice(0, 2).join(':'),
+            desc: item.description[0],
+            link: item.link[0],
+            // For now it is a random number between 0 and 1 to simulate the sentiment.
+            // Converted to a percentage later with no decimal places.
+            sentiment: Math.floor(Math.random() * 100),
+            title: item.title[0],
+        };
+        articles.push(article);
+    });
+
     return (
-        <Container className='px-4 py-5'>
-            <h2 className="pb-2 border-bottom" id='features'>Features</h2>
-            <div className="row g-4 py-5 row-cols-1 row-cols-lg-3">
-                {
-                    features.map((feature, key) => <div key={key} className="col d-flex align-items-start">
-                        <div className="icon-square bg-light text-dark flex-shrink-0 me-3">
-                            {feature.img}
-                        </div>
-                        <div>
-                            <h2>{feature.title}</h2>
-                            <p>{feature.desc}</p>
-                            {feature.buttons}
-                        </div>
-                    </div>)
-                }
-            </div>
-        </Container>
+        <div className='container px-4 py-0'>
+            <h2 className="pb-2 border-bottom" id='features'>Latest news</h2>
+            <table className="table">
+                <TableHeader />
+                <tbody>
+                    {
+                        articles.map((feature, key) => (
+                            <tr key={key}>
+                                <td>
+                                    <span>{feature.sentiment}</span>
+                                </td>
+                                <td>
+                                    <span>{feature.title}</span>
+                                </td>
+                                <td>
+                                    <span>{feature.date}</span>
+                                </td>
+                            </tr>
+                        ))
+                    }
+                </tbody>
+            </table>
+        </div>
     );
 };
 
 export default Feature;
 
-/** Creates a Badge with currently installed package version. */
-const VersionBadge = (name) => {
-    const version = packageLock.packages['node_modules/' + name]?.version;
-    return <Badge bg='info'>{version}</Badge>;
-};
+export async function ArticleTableSkeleton() {
+    return (
+        <div className='container px-4 py-0'>
+            <h2 className="pb-2 border-bottom" id='features'>Latest news</h2>
+            <table className="table">
+                <TableHeader />
+                <tbody>
+                    {range(1, 11).map(key => (
+                        <tr key={key}>
+                            <td>
+                                <div className="spinner-border spinner-border-sm text-primary" role="status">
+                                    <span className="sr-only" />
+                                </div>
+                            </td>
+                            <td>
+                                <div className="progress">
+                                    <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style={{ width: '100%' }}></div>
+                                </div>
+                            </td>
+                            <td>
+                                <div className="spinner-border spinner-border-sm text-primary" role="status">
+                                    <span className="sr-only" />
+                                </div>
+                            </td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+        </div>
+    );
+}
+
+async function TableHeader() {
+    return (
+        <thead>
+            <tr>
+                <th scope="col" className='col-1'>Sentiment</th>
+                <th scope="col" className='col-9'>Title</th>
+                <th scope="col" className='col-2'>Published</th>
+            </tr>
+        </thead>
+    );
+}
