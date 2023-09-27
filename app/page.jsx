@@ -1,6 +1,14 @@
-import { redirect } from 'next/navigation';
+import Hero from '../components/landing/hero';
+import Feature from '../components/landing/feature';
+import About from '../components/landing/about';
 
-// This page only renders when the app is built statically (output: 'export')
-export default function RootPage() {
-    redirect('/en');
+export default function Home() {
+
+    return (
+        <div>
+            <Hero />
+            <Feature />
+            <About />
+        </div>
+    );
 }

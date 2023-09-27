@@ -1,4 +1,4 @@
-import pjson from '../../../package.json';
+import pjson from '../../package.json';
 import PropTypes from 'prop-types';
 
 export default function Faq() {
@@ -7,18 +7,6 @@ export default function Faq() {
         {
             answer: pjson.description,
             question: `What is ${pjson.displayName}?`,
-        },
-        {
-            answer: 'Yes. We switched to Clerk for authentication. It\'s a lot easier to use and has a lot more features.',
-            question: 'Wasn\'t there Next-auth?',
-        },
-        {
-            answer: 'No. It used to when it was using Next-auth, but now it uses Clerk. The plan is to add a database for user data.',
-            question: 'Does it create any database tables?',
-        },
-        {
-            answer: 'It was the implementation with the smallest changes needed.',
-            question: 'Why did you choose next-translate for i18n?',
         },
         {
             answer: 'Yes.',
