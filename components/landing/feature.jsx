@@ -6,7 +6,7 @@ import range from 'lodash/range';
 const Feature = async () => {
 
     // TODO: Load them from the database instead. The sentiment should be calculated there already.
-    const rss = await fetch('https://www.theguardian.com/international/rss').then(res => res.text());
+    const rss = await fetch('https://www.theguardian.com/international/rss', {next: {revalidate:60}}).then(res => res.text());
     // await new Promise(r => setTimeout(r, 1100));
     // process the xml in nodejs runtime
     const result = await xml2js.parseStringPromise(rss /*, options */);
