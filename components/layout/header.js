@@ -14,16 +14,21 @@ export default function Header() {
             <Navbar bg="light" expand="sm">
                 <Container fluid>
                     <Navbar.Toggle aria-controls="navbarScroll" />
-                    <Navbar.Brand href="/">{pjson.displayName}</Navbar.Brand>
-                    <Nav className='me-auto'>
-                        <Link
-                            passHref
-                            href="https://github.com/jirihofman/nextjs-fullstack-app-template"
-                            legacyBehavior><Nav.Link>GitHub</Nav.Link></Link>
+                    <Navbar.Brand href="/">
+                        <span className="d-none d-sm-inline">{pjson.displayName}</span>
+                        <span className="d-inline d-sm-none">{pjson.displayName.substring(0,13)}</span>                        
+                    </Navbar.Brand>
+                    <Navbar.Collapse id="navbarScroll" className="justify-content-end" collapseOnSelect={true}>
+                        <Nav className='me-auto'>
+                            <Link
+                                passHref
+                                href="https://github.com/jirihofman/nextjs-fullstack-app-template"
+                                legacyBehavior><Nav.Link>GitHub</Nav.Link></Link>
 
-                        <Link passHref href="/faq" legacyBehavior><Nav.Link>FAQ</Nav.Link></Link>
-                        <Nav.Link role='button' data-bs-toggle='modal' data-bs-target='#exampleModal'>About</Nav.Link>
-                    </Nav>
+                            <Link passHref href="/faq" legacyBehavior><Nav.Link>FAQ</Nav.Link></Link>
+                            <Nav.Link role='button' data-bs-toggle='modal' data-bs-target='#exampleModal'>About</Nav.Link>
+                        </Nav>
+                    </Navbar.Collapse>
                 </Container>
             </Navbar>
 
