@@ -32,11 +32,6 @@ export default function Header() {
                     </Navbar.Brand>
                     <Navbar.Collapse id="navbarScroll" className="justify-content-end">
                         <Nav className='me-auto'>
-                            <Link
-                                passHref
-                                href="https://github.com/jirihofman/nextjs-fullstack-app-template"
-                                legacyBehavior><Nav.Link>GitHub</Nav.Link></Link>
-
                             <Link passHref href="/faq" legacyBehavior><Nav.Link>FAQ</Nav.Link></Link>
                             <Nav.Link role='button' data-bs-toggle='modal' data-bs-target='#exampleModal'>About</Nav.Link>
                             <Nav.Item>{isAdmin && <Buttons />}</Nav.Item>
@@ -63,8 +58,21 @@ export default function Header() {
                             <table>
                                 <tbody>
                                     <tr>
+                                        <th>Author</th>
+                                        <td>{pjson.author.name}</td>
+                                    </tr>
+                                    <tr>
                                         <th>Version</th>
                                         <td>{pjson.version}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>GitHub</th>
+                                        <td>
+                                            <Link
+                                                passHref
+                                                href="https://github.com/jirihofman/sentiment-guardian"
+                                                legacyBehavior>sentiment-guardian</Link>
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>

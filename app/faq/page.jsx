@@ -5,16 +5,19 @@ export default function Faq() {
 
     const data = [
         {
-            answer: pjson.description,
+            answer: [
+                pjson.description,
+                'It periodically loads headlines from The Guardian and evaluates their sentiment using OpenAI\'s GPT-4 model.',
+            ].join(' '),
             question: `What is ${pjson.displayName}?`,
+        },
+        {
+            answer: 'To track many more outlets, and to provide more detailed analysis.',
+            question: 'What are the plans for the future?',
         },
         {
             answer: 'Yes.',
             question: 'Will there be more FAQs?',
-        },
-        {
-            answer: 'Maybe.',
-            question: 'Soon?',
         },
     ];
 
