@@ -52,6 +52,7 @@
     "bootstrap": "^5.2.1",
     "lodash": "^4.17.21",
     "next": "^13.5.3",
+    "node-html-parser": "^6.1.10",
     "notiflix": "^3.2.6",
     "openai": "^4.10.0",
     "react": "^18.2.0",

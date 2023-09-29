@@ -9,7 +9,7 @@ const Hero = () => {
             <div className="col-lg-6 mx-auto">
                 <p className="lead mb-0">
                     📰
-                    {'Rise and shine or doom and gloom? Find out the sentiment of the Guardian\'s articles.'}
+                    {' Rise and shine or doom and gloom? Find out the sentiment of the Guardian\'s articles.'}
                 </p>
                 <Buttons />
             </div>
