@@ -2,16 +2,27 @@
 // import Image from 'next/image';
 import range from 'lodash/range';
 import { kv } from '@vercel/kv';
-
-export const revalidate = 60;
+import { unstable_cache } from 'next/cache';
 
 const header = 'Latest Guardian news';
 
 const Feature = async () => {
 
-    const articles = await kv.zrange('article:guardian', 0, -1, { count: 20, offset: 0, rev: true, withScores: false });
+    const cachedArticles = await unstable_cache(
+        async () => {
+            // eslint-disable-next-line no-console
+            console.log('Loading articles');
+            const articles = await kv.zrange('article:guardian', 0, -1, { count: 20, offset: 0, rev: true, withScores: false });
+            return articles;
+        },
+        ['article:guardian'],
+        {
+            revalidate: 60,
+            tags: ['article:guardian'],
+        }
+    )();
     // eslint-disable-next-line no-console
-    console.log('Loaded %d articles', articles.length);
+    console.log('Loaded %d cached articles', cachedArticles.length);
 
     return (
         <div className='container px-4 py-0'>
@@ -20,7 +31,7 @@ const Feature = async () => {
                 <TableHeader />
                 <tbody>
                     {
-                        articles.map((feature, key) => (
+                        cachedArticles.map((feature, key) => (
                             <tr key={key}>
                                 <td>
                                     <span>{getSentiment(feature.sentiment)}</span>
