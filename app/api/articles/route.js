@@ -5,6 +5,7 @@ import { parse } from 'node-html-parser';
 import xml2js from 'xml2js';
 
 // const openai = new OpenAI();
+export const revalidate = 0;
 
 export async function GET() {
 

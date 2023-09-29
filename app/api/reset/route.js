@@ -1,6 +1,8 @@
 /* eslint-disable no-console */
 import { kv } from '@vercel/kv';
 
+export const revalidate = 0;
+
 export async function GET() {
 
     // flushall

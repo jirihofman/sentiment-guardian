@@ -4,6 +4,8 @@ import { kv } from '@vercel/kv';
 
 const openai = new OpenAI();
 
+export const revalidate = 0;
+
 export async function GET() {
 
     const articles = await kv.zrange('article:guardian', 0, -1, { count: 100, offset: 0, rev: true, withScores: false });
