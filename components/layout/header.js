@@ -18,7 +18,7 @@ export default function Header() {
                         <span className="d-none d-sm-inline">{pjson.displayName}</span>
                         <span className="d-inline d-sm-none">{pjson.displayName.substring(0,13)}</span>                        
                     </Navbar.Brand>
-                    <Navbar.Collapse id="navbarScroll" className="justify-content-end" collapseOnSelect={true}>
+                    <Navbar.Collapse id="navbarScroll" className="justify-content-end">
                         <Nav className='me-auto'>
                             <Link
                                 passHref
@@ -36,12 +36,10 @@ export default function Header() {
                 <Modal.Dialog className="modal-dialog">
                     <div className="modal-content">
                         <Modal.Header>
-                            <h5 className="modal-title" id="exampleModalLabel">About <b>{pjson.displayName}</b></h5>
+                            <h5 className="modal-title" id="exampleModalLabel">About <b>{pjson.displayName}</b> 📰</h5>
                         </Modal.Header>
                         <div className="modal-body">
-                            <p>
-                                {pjson.description}
-                            </p>
+                            <p>{pjson.description}</p>
                             <table>
                                 <tbody>
                                     <tr>

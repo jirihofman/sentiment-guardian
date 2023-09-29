@@ -3,13 +3,13 @@
 import range from 'lodash/range';
 import { kv } from '@vercel/kv';
 
+const header = 'Latest Guardian news';
 const Feature = async () => {
 
     const articles = await kv.zrange('article:guardian', 0, -1, { count: 20, offset: 0, rev: true, withScores: false });
-
     return (
         <div className='container px-4 py-0'>
-            <h2 className="pb-2 border-bottom" id='features'>Latest news</h2>
+            <h2 className="pb-2 border-bottom" id='features'>{header}</h2>
             <table className="table">
                 <TableHeader />
                 <tbody>
@@ -17,7 +17,7 @@ const Feature = async () => {
                         articles.map((feature, key) => (
                             <tr key={key}>
                                 <td>
-                                    <span>{feature.sentiment || '🤷'}</span>
+                                    <span>{getSentiment(feature.sentiment)}</span>
                                 </td>
                                 <td>
                                     <span>{feature.title}</span>
@@ -34,12 +34,36 @@ const Feature = async () => {
     );
 };
 
+function getSentiment(sentiment) {
+
+    let result = '😐';
+    if (!sentiment) {
+        return '🤷';
+    }
+
+    if (sentiment > 60) {
+        if (sentiment > 80) {
+            result = '😁';
+        }
+        result = '🙂';
+    }
+
+    if (sentiment < 40) {
+        if (sentiment < 20) {
+            result = '😭';
+        }
+        result = '😔';
+    }
+
+    return result + ' ' + (sentiment || '');
+}
+
 export default Feature;
 
 export async function ArticleTableSkeleton() {
     return (
         <div className='container px-4 py-0'>
-            <h2 className="pb-2 border-bottom" id='features'>Latest news</h2>
+            <h2 className="pb-2 border-bottom" id='features'>{header}</h2>
             <table className="table">
                 <TableHeader />
                 <tbody>

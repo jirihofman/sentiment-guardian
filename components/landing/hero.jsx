@@ -1,4 +1,5 @@
 import pjson from '../../package.json';
+import Buttons from '../buttons';
 
 const Hero = () => {
 
@@ -8,8 +9,9 @@ const Hero = () => {
             <div className="col-lg-6 mx-auto">
                 <p className="lead mb-0">
                     📰
-                    {pjson.description}
+                    Rise and shine or doom and gloom? Find out the sentiment of the Guardian`s articles.
                 </p>
+                <Buttons />
             </div>
         </div>
     );
