@@ -16,7 +16,7 @@ export default function ButtonReload() {
     };
 
     return (
-        <button onClick={handleClick} type="button" className="btn btn-primary mx-2">
+        <button onClick={handleClick} type="button" className="btn btn-primary btn-sm mx-2">
             Refresh articles
         </button>
     );

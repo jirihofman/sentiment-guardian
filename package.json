@@ -1,7 +1,8 @@
 {
   "name": "the-sentiment-of-the-guardian",
   "author": {
-    "name": "Jiří Hofman"
+    "name": "Jiří Hofman",
+    "email": "jiri.hofman@gmail.com"
   },
   "description": "Tracker of the sentiment of the Guardian articles.",
   "displayName": "The Sentiment of The Guardian",
@@ -13,7 +14,7 @@
     "npm": ">=8.0.0"
   },
   "scripts": {
-    "dev": "next dev --turbo",
+    "dev": "next dev",
     "build": "next build",
     "start": "next start -p 5100",
     "lint": "next lint",
@@ -47,6 +48,7 @@
     "test:coverage:e2e": "cypress run --browser chrome --env coverage=true && cp cypress-coverage/coverage-final.json reports/from-cypress.json"
   },
   "dependencies": {
+    "@clerk/nextjs": "^4.25.0",
     "@vercel/analytics": "^1.0.0",
     "@vercel/kv": "^0.2.3",
     "bootstrap": "^5.2.1",

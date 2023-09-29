@@ -3,11 +3,25 @@
 import { kv } from '@vercel/kv';
 import { parse } from 'node-html-parser';
 import xml2js from 'xml2js';
+import { getAuth } from '@clerk/nextjs/server';
+import { clerkClient } from '@clerk/nextjs';
+import pjson from '../../../package.json';
 
 // const openai = new OpenAI();
 export const revalidate = 0;
 
-export async function GET() {
+export async function GET(req, res) {
+
+    const { userId } = getAuth(req);
+    const user = userId ? await clerkClient.users.getUser(userId) : null;
+    if (!userId) {
+        res.status(401).json({ error: 'Unauthorized' });
+        return;
+    }
+
+    if (user.emailAddresses[0].emailAddress !== pjson.author.email) {
+        return new Response('Unauthorized to perform this action - ' + user.emailAddresses[0].emailAddress, { status: 403 });
+    }
 
     // Get Headlines from https://www.theguardian.com/international. Id = container-headlines
     const html = await fetch('https://www.theguardian.com/international', { next: { revalidate: 60 }}).then(res => res.text());

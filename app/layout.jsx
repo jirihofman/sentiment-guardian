@@ -1,4 +1,5 @@
 import Script from 'next/script';
+import { ClerkProvider } from '@clerk/nextjs';
 import Main from '../components/layout/main';
 import pjson from '../package.json';
 /* ensure all pages have Bootstrap CSS */
@@ -13,11 +14,13 @@ export default async function LocaleLayout({
             <head>
                 <Script src='https://cdn.jsdelivr.net/npm/bootstrap@5.2.3' crossOrigin='anonymous' defer />
             </head>
-            <body suppressHydrationWarning={true}>
-                <Main>
-                    <main>{children}</main>
-                </Main>
-            </body>
+            <ClerkProvider>
+                <body suppressHydrationWarning={true}>
+                    <Main>
+                        <main>{children}</main>
+                    </Main>
+                </body>
+            </ClerkProvider>
         </html>
     );
 }

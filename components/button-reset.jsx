@@ -20,7 +20,7 @@ export default function ButtonReset() {
     };
 
     return (
-        <button onClick={handleClick} type="button" className="btn btn-danger mx-2">
+        <button onClick={handleClick} type="button" className="btn btn-danger btn-sm mx-2">
             Reset
         </button>
     );

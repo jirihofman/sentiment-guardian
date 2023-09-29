@@ -16,8 +16,8 @@ export default function ButtonSentiment() {
     };
 
     return (
-        <button onClick={handleClick} type="button" className="btn btn-primary mx-2">
-            Evaluate sentiment (2 articles max)
+        <button onClick={handleClick} type="button" className="btn btn-primary btn-sm mx-2">
+            Evaluate (2)
         </button>
     );
 }

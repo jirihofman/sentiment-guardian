@@ -3,7 +3,7 @@
 import range from 'lodash/range';
 import { getArticlesKvGuardian0 } from '../../lib/data';
 
-const header = 'Latest Guardian news';
+const header = 'Latest Guardian headlines';
 
 export const revalidate = 60;
 
@@ -29,7 +29,7 @@ const Feature = async () => {
                                     <span>{feature.title}</span>
                                 </td>
                                 <td>
-                                    <span>{feature.date}</span>
+                                    <span>{feature.date.replace('T', ' ').replace('Z', '').replace(/:\d\d$/, '')}</span>
                                 </td>
                             </tr>
                         ))
