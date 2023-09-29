@@ -3,10 +3,16 @@
 import range from 'lodash/range';
 import { kv } from '@vercel/kv';
 
+export const revalidate = 60;
+
 const header = 'Latest Guardian news';
+
 const Feature = async () => {
 
     const articles = await kv.zrange('article:guardian', 0, -1, { count: 20, offset: 0, rev: true, withScores: false });
+    // eslint-disable-next-line no-console
+    console.log('Loaded %d articles', articles.length);
+
     return (
         <div className='container px-4 py-0'>
             <h2 className="pb-2 border-bottom" id='features'>{header}</h2>
