@@ -44,15 +44,17 @@ function getSentiment(sentiment) {
     if (sentiment > 60) {
         if (sentiment > 80) {
             result = '😁';
+        } else {
+            result = '🙂';
         }
-        result = '🙂';
     }
 
     if (sentiment < 40) {
         if (sentiment < 20) {
             result = '😭';
+        } else {
+            result = '😔';
         }
-        result = '😔';
     }
 
     return result + ' ' + (sentiment || '');
