@@ -1,13 +1,15 @@
 // import Link from 'next/link';
 // import Image from 'next/image';
 import range from 'lodash/range';
-import { getArticlesKvGuardian } from '../../lib/data';
+import { getArticlesKvGuardian0 } from '../../lib/data';
 
 const header = 'Latest Guardian news';
 
+export const revalidate = 60;
+
 const Feature = async () => {
 
-    const articles = await getArticlesKvGuardian();
+    const articles = await getArticlesKvGuardian0();
     // eslint-disable-next-line no-console
     console.log('Loaded %d cached articles', articles.length);
 

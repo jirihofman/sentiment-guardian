@@ -6,11 +6,10 @@ import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import '../style/index.css';
 
 export default async function LocaleLayout({
-    children,
-    params: { locale }
+    children
 }) {
     return (
-        <html lang={locale}>
+        <html>
             <head>
                 <Script src='https://cdn.jsdelivr.net/npm/bootstrap@5.2.3' crossOrigin='anonymous' defer />
             </head>
