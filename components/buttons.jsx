@@ -1,5 +1,6 @@
 import ButtonReload from './button-reaload';
 import ButtonSentiment from './button-sentiment';
+import ButtonReset from './button-reset';
 
 export default function Buttons() {
 
@@ -7,6 +8,7 @@ export default function Buttons() {
         <>
             <ButtonReload />
             <ButtonSentiment />
+            <ButtonReset />
         </>
     );
 }
