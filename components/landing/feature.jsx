@@ -1,22 +1,13 @@
 // import Link from 'next/link';
 // import Image from 'next/image';
 import range from 'lodash/range';
-import { kv } from '@vercel/kv';
-import { cache } from 'react';
+import { getArticlesKvGuardian } from '../../lib/data';
 
 const header = 'Latest Guardian news';
 
 const Feature = async () => {
 
-    const cachedArticles = cache(
-        async () => {
-            // eslint-disable-next-line no-console
-            console.log('Loading articles');
-            const articles = await kv.zrange('article:guardian', 0, -1, { count: 20, offset: 0, rev: true, withScores: false });
-            return articles;
-        }, 60);
-        
-    const articles = await cachedArticles();
+    const articles = await getArticlesKvGuardian();
     // eslint-disable-next-line no-console
     console.log('Loaded %d cached articles', articles.length);
 
