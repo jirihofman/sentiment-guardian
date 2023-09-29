@@ -8,7 +8,7 @@ export async function GET() {
 
     const articles = await kv.zrange('article:guardian', 0, -1, { count: 100, offset: 0, rev: true, withScores: false });
     const articlesWithoutSentiment = articles.filter(article => !article.sentiment);
-    const max = 3;
+    const max = 2;
     let processed = 0;
 
     console.log('articlesWithoutSentiment', articlesWithoutSentiment);
@@ -18,7 +18,7 @@ export async function GET() {
             break;
         }
         // Get sentiment from OpenAI for this article.
-        const message = `Determine sentiment of the following headline as a number from range 1-100. 100 is the most positive. Return only the number. Title: ${article.title}`;
+        const message = `Determine sentiment of the following headline as a number from range 1-100. 100 is the most positive. Return only the number. Title: ${article.title}. Article text is: ${article.description}`;
         const chatCompletion = await openai.chat.completions.create({
             messages: [{ content: message, role: 'user' }],
             model: 'gpt-3.5-turbo',
