@@ -15,8 +15,10 @@ const Feature = async () => {
             const articles = await kv.zrange('article:guardian', 0, -1, { count: 20, offset: 0, rev: true, withScores: false });
             return articles;
         }, 60);
+        
+    const articles = await cachedArticles();
     // eslint-disable-next-line no-console
-    console.log('Loaded %d cached articles', cachedArticles.length);
+    console.log('Loaded %d cached articles', articles.length);
 
     return (
         <div className='container px-4 py-0'>
@@ -25,7 +27,7 @@ const Feature = async () => {
                 <TableHeader />
                 <tbody>
                     {
-                        cachedArticles.map((feature, key) => (
+                        articles.map((feature, key) => (
                             <tr key={key}>
                                 <td>
                                     <span>{getSentiment(feature.sentiment)}</span>
