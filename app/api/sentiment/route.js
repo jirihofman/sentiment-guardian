@@ -23,7 +23,7 @@ export async function GET() {
         const message = `Determine sentiment of the following headline as a number from range 1-100. 100 is the most positive. Return only the number. Title: ${article.title}. Article text is: ${article.description}`;
         const chatCompletion = await openai.chat.completions.create({
             messages: [{ content: message, role: 'user' }],
-            model: 'gpt-3.5-turbo',
+            model: 'gpt-4',
             user: 'The sentiment of The Guardian'
         });
         console.log('chatCompletion for article', article.title, chatCompletion.choices);
