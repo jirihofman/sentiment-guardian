@@ -10,25 +10,9 @@ import pjson from '../../../package.json';
 // const openai = new OpenAI();
 export const revalidate = 0;
 
-export async function GET(req) {
-
-    let authenticated = false;
-    // Check adminApiKey in url.
-    const { adminApiKey } = req.query;
-    if (adminApiKey === process.env.ADMIN_API_KEY) {
-        authenticated = true;
-    }
-
-    const { userId } = getAuth(req);
-    const user = userId ? await clerkClient.users.getUser(userId) : null;
-    authenticated = authenticated || (user && user.emailAddresses[0].emailAddress === pjson.author.email);
-
-    if (!authenticated) {
-        return new Response('Unauthorized to perform this action', { status: 403 });
-    }
-
+async function doAllTheShit() {
     // Get Headlines from https://www.theguardian.com/international. Id = container-headlines
-    const html = await fetch('https://www.theguardian.com/international', { next: { revalidate: 60 }}).then(res => res.text());
+    const html = await fetch('https://www.theguardian.com/international', { next: { revalidate: 0 }}).then(res => res.text());
     // Parse the html and get the headlines from #container-headlines.
     const doc = parse(html);
     const headlines = [...doc.querySelectorAll('#container-headlines .show-underline')].map(headline => headline.innerText);
@@ -39,7 +23,7 @@ export async function GET(req) {
     // Add missing articles to KV without sentiment.
     // Supposed to run every hour.
     const newspaper = 'guardian';
-    const rss = await fetch('https://www.theguardian.com/international/rss', { next: { revalidate: 60 }}).then(res => res.text());
+    const rss = await fetch('https://www.theguardian.com/international/rss', { next: { revalidate: 0 }}).then(res => res.text());
     const parser = new xml2js.Parser();
     const parsed = await parser.parseStringPromise(rss);
     const titlesFromRss = parsed.rss.channel[0].item.map(item => item.title[0]);
@@ -81,6 +65,35 @@ export async function GET(req) {
         await kv.set('articles-last-added', new Date().toISOString());
     }
 
+    return articlesAdded;
+}
+
+// Called from UI when signed-in.
+export async function GET(req) {
+
+    const { userId } = getAuth(req);
+    const user = userId ? await clerkClient.users.getUser(userId) : null;
+
+    if (!user || user.emailAddresses[0].emailAddress !== pjson.author.email) {
+        return new Response('Unauthorized to perform this action', { status: 403 });
+    }
+
+    const articlesAdded = await doAllTheShit();
+
     // Select latest 100 articles from KV.
     return new Response(JSON.stringify(articlesAdded, null, 4));
+}
+
+// Called from GitHub Actions with adminApiKey.
+export async function POST(req) {
+
+    // read adminApiKey from request body.
+    const { adminApiKey } = await req.json();
+    if (adminApiKey === process.env.ADMIN_API_KEY) {
+        const articlesAdded = await doAllTheShit();
+        return new Response(JSON.stringify(articlesAdded, null, 4));
+    } else {
+        console.log(process.env.ADMIN_API_KEY);
+        return new Response('Unauthorized to perform this action', { status: 403 });
+    }
 }
