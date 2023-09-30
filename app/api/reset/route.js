@@ -7,7 +7,8 @@ export async function GET() {
 
     // flushall
     await kv.flushall();
-    
+    // TODO: Reset vercel cache by tag.
+
     // Select latest 100 articles from KV.
     return new Response('KV flushed', { status: 200 });
 }

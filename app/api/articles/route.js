@@ -6,7 +6,6 @@ import { getAuth } from '@clerk/nextjs/server';
 import { clerkClient } from '@clerk/nextjs';
 import pjson from '../../../package.json';
 
-// const openai = new OpenAI();
 export const revalidate = 0;
 
 async function doAllTheShit() {
@@ -20,7 +19,7 @@ async function doAllTheShit() {
     console.log('headlines', headlines);
 
     // Add missing articles to KV without sentiment.
-    // Supposed to run every hour.
+    // Supposed to run every hour or 10 minutes. Need RSS to get the date which is transformed into a score.
     const newspaper = 'guardian';
     const rss = await fetch('https://www.theguardian.com/international/rss', { next: { revalidate: 0 }}).then(res => res.text());
     const parser = new xml2js.Parser();
@@ -30,6 +29,7 @@ async function doAllTheShit() {
     const articlesFromRss = parsed.rss.channel[0].item.map(item => ({
         category: [...item.category].map(category => category._),
         date: item['dc:date'][0],
+        // Takes too much space in KV.
         // description: item.description[0],
         link: item.link[0],
         title: item.title[0],
