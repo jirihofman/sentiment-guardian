@@ -9,6 +9,7 @@ export default authMiddleware({
         '/faq',
         '/sign-in',
         '/sign-up',
+        // Called by GitHub cron job actions.
         '/api/articles',
         '/api/sentiment',
     ]
