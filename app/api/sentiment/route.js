@@ -1,13 +1,15 @@
 /* eslint-disable no-console */
 import OpenAI from 'openai';
 import { kv } from '@vercel/kv';
+import { getAuth } from '@clerk/nextjs/server';
+import { clerkClient } from '@clerk/nextjs';
+import pjson from '../../../package.json';
 
 const openai = new OpenAI();
 
 export const revalidate = 0;
 
-export async function GET() {
-
+async function doAllTheShit() {
     const articles = await kv.zrange('article:guardian', 0, -1, { count: 100, offset: 0, rev: true, withScores: false });
     const articlesWithoutSentiment = articles.filter(article => !article.sentiment);
     const max = 2;
@@ -47,12 +49,34 @@ export async function GET() {
         console.log('updated', updated);
         processed++;
     }
-    return new Response(JSON.stringify(articlesWithoutSentiment));
+
+    return processed;
 }
 
-// export async function POST(request) {
+export async function GET(req) {
 
-// 	// Get articles from KV without sentiment.
-// 	const articles = await kv.zrange('article:guardian', 0, -1, { count: 20, offset: 0, rev: true, withScores: false });
+    const { userId } = getAuth(req);
+    const user = userId ? await clerkClient.users.getUser(userId) : null;
 
-// const rss = await fetch('https://www.theguardian.com/international/rss', { next: { revalidate: 60 }}).then(res => res.text());
+    if (!user || user.emailAddresses[0].emailAddress !== pjson.author.email) {
+        return new Response('Unauthorized to perform this action', { status: 403 });
+    }
+
+    const sentimentAdded = await doAllTheShit();
+
+    return new Response(sentimentAdded);
+}
+
+export async function POST(req) {
+
+    // read adminApiKey from request body.
+    const { adminApiKey } = await req.json();
+    if (adminApiKey === process.env.ADMIN_API_KEY) {
+        const sentimentAdded = await doAllTheShit();
+        return new Response(JSON.stringify(sentimentAdded, null, 4));
+    } else {
+        console.log(process.env.ADMIN_API_KEY);
+        return new Response('Unauthorized to perform this action', { status: 403 });
+    }
+
+}

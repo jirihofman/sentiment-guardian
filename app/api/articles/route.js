@@ -1,5 +1,4 @@
 /* eslint-disable no-console */
-// import OpenAI from 'openai';
 import { kv } from '@vercel/kv';
 import { parse } from 'node-html-parser';
 import xml2js from 'xml2js';
@@ -80,7 +79,6 @@ export async function GET(req) {
 
     const articlesAdded = await doAllTheShit();
 
-    // Select latest 100 articles from KV.
     return new Response(JSON.stringify(articlesAdded, null, 4));
 }
 
