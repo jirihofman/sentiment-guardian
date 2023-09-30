@@ -7,6 +7,8 @@ export default authMiddleware({
     publicRoutes: [
         '/',
         '/faq',
+        '/sign-in',
+        '/sign-up'
     ]
 });
 
