@@ -15,6 +15,7 @@ coverage.json
 cypress/videos
 cypress/screenshots
 xunit-*.xml
+test-results.xml
 
 # next.js
 /.next/

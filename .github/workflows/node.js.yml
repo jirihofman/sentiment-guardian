@@ -45,8 +45,9 @@ jobs:
     - run: npm run test:e2e:component
     - run: npm run test:build
     - run: npm run report:combined
-    - name: Upload coverage reports to Codecov
-      uses: codecov/codecov-action@v3
+    # TODO: Enable when the repo is public.
+    # - name: Upload coverage reports to Codecov
+    #   uses: codecov/codecov-action@v3
     # there might be no screenshots and videos created when there are no test failures
     # so only upload screenshots if previous step has failed
     - uses: actions/upload-artifact@v3
