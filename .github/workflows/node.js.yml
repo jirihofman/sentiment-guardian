@@ -13,22 +13,12 @@ env:
   # Replaces the value set in .env.test.local
   NEXT_PUBLIC_NODE_ENV: test
   # Replaces the value set in .env.test.local
-  # DB stuff. There is a default mysql server with root/root. See https://ovirium.com/blog/how-to-make-mysql-work-in-your-github-actions/
-  MYSQL_URI: "mysql://root:root@127.0.0.1:3306/nfat2?synchronize=false&charset=utf8mb4"
-  DB_DATABASE: nfat2
-  DB_USER: root
-  DB_PASSWORD: root
-  GPR_TOKEN: ${{ secrets.GPR_TOKEN }}
   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
   CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}
 jobs:
   build:
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    # strategy:
-    #   matrix:
-    #     node-version: [16.x]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
     steps:
     - uses: actions/checkout@v3
     - name: Use Node.js ${{ matrix.node-version }}
@@ -49,7 +39,6 @@ jobs:
           ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-
     - name: Install 🛠
       run: npm ci
-    #     config: 'baseUrl=http://localhost:5100'
     - run: npm run pretest
     - run: npm run test:coverage:prepare-folders
     - run: npm run test:coverage:jest
