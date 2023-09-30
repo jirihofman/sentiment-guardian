@@ -12,6 +12,10 @@ export default function Faq() {
             question: `What is ${pjson.displayName}?`,
         },
         {
+            answer: <code>Determine sentiment of the following headline as a number from range 1-100. 100 is the most positive. Return only the number. Title: ARTICLE_TITLE</code>,
+            question: 'What prompt does it use?',
+        },
+        {
             answer: 'To track many more outlets, and to provide more detailed analysis.',
             question: 'What are the plans for the future?',
         },
