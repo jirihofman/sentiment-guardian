@@ -43,7 +43,7 @@ export async function GET(req, res) {
     const articlesFromRss = parsed.rss.channel[0].item.map(item => ({
         category: [...item.category].map(category => category._),
         date: item['dc:date'][0],
-        description: item.description[0],
+        // description: item.description[0],
         link: item.link[0],
         title: item.title[0],
     }))
