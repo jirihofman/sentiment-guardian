@@ -10,19 +10,21 @@ import pjson from '../../../package.json';
 // const openai = new OpenAI();
 export const revalidate = 0;
 
-export async function GET(req, res) {
+export async function GET(req) {
 
-    // check ADMIN_API_KEY
-    
-    const { userId } = getAuth(req);
-    const user = userId ? await clerkClient.users.getUser(userId) : null;
-    if (!userId) {
-        res.status(401).json({ error: 'Unauthorized' });
-        return;
+    let authenticated = false;
+    // Check adminApiKey in url.
+    const { adminApiKey } = req.query;
+    if (adminApiKey === process.env.ADMIN_API_KEY) {
+        authenticated = true;
     }
 
-    if (user.emailAddresses[0].emailAddress !== pjson.author.email) {
-        return new Response('Unauthorized to perform this action - ' + user.emailAddresses[0].emailAddress, { status: 403 });
+    const { userId } = getAuth(req);
+    const user = userId ? await clerkClient.users.getUser(userId) : null;
+    authenticated = authenticated || (user && user.emailAddresses[0].emailAddress === pjson.author.email);
+
+    if (!authenticated) {
+        return new Response('Unauthorized to perform this action', { status: 403 });
     }
 
     // Get Headlines from https://www.theguardian.com/international. Id = container-headlines
