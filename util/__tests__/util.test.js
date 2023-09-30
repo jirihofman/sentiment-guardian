@@ -1,4 +1,4 @@
-import { getLangIcon, niceBytes } from '../util';
+// import { getLangIcon, niceBytes } from '../util';
 
 describe.skip('niceBytes', () => {
     it('KB', () => {
