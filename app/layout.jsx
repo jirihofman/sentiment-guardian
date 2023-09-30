@@ -9,7 +9,7 @@ import '../style/index.css';
 
 export default async function LocaleLayout({ children }) {
     return (
-        <html>
+        <html lang='en'>
             <head>
                 <Script src='https://cdn.jsdelivr.net/npm/bootstrap@5.2.3' crossOrigin='anonymous' defer />
             </head>
