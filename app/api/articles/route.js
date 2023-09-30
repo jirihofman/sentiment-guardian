@@ -12,6 +12,8 @@ export const revalidate = 0;
 
 export async function GET(req, res) {
 
+    // check ADMIN_API_KEY
+    
     const { userId } = getAuth(req);
     const user = userId ? await clerkClient.users.getUser(userId) : null;
     if (!userId) {
