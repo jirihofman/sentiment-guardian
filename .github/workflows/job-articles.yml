@@ -5,7 +5,7 @@ on:
     # Run every 10 minutes
     - cron: '*/10 * * * *'
   workflow_dispatch:
-  
+
 
 env:
   ADMIN_API_KEY: ${{ secrets.ADMIN_API_KEY }}

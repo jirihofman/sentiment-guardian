@@ -8,7 +8,9 @@ export default authMiddleware({
         '/',
         '/faq',
         '/sign-in',
-        '/sign-up'
+        '/sign-up',
+        '/api/articles',
+        '/api/sentiment',
     ]
 });
 
