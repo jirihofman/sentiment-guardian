@@ -1,5 +1,5 @@
 import Hero from '../components/landing/hero';
-import Feature, { ArticleTableSkeleton } from '../components/landing/feature';
+import ArticleTable, { ArticleTableSkeleton } from '../components/landing/article-table';
 import { Suspense } from 'react';
 
 export default function Home() {
@@ -8,7 +8,7 @@ export default function Home() {
         <div>
             <Hero />
             <Suspense fallback={<ArticleTableSkeleton />}>
-                <Feature />
+                <ArticleTable />
             </Suspense>
         </div>
     );

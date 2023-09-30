@@ -8,7 +8,7 @@ const header = 'Latest Guardian headlines';
 
 export const revalidate = 60;
 
-const Feature = async () => {
+const ArticleTable = async () => {
 
     const articles = await getArticlesKvGuardian0();
     // eslint-disable-next-line no-console
@@ -21,13 +21,13 @@ const Feature = async () => {
     const averageSentimentEmoji = getSentiment(averageSentiment);
 
     return (
-        <div className='container px-4 py-0'>
+        <div className='container px-4 py-0 my-3'>
             <h2 className="pb-2 border-bottom" id='features'>
                 {header}
-                <span className='float-end mx-3'>
-                    {averageSentimentEmoji}
-                </span>
             </h2>
+            <div className='mx-1 p-1'>
+                Average sentiment for the last {articles.length} headlines: {averageSentimentEmoji}
+            </div>
             <table className="table">
                 <TableHeader />
                 <tbody>
@@ -35,23 +35,27 @@ const Feature = async () => {
                         articles.map((feature, key) => (
                             <tr key={key}>
                                 <td>
-                                    <span>{getSentiment(feature.sentiment)}</span>
+                                    <span style={{ fontSize: '1.5em' }}>{getSentiment(feature.sentiment)}</span>
                                 </td>
                                 <td>
-                                    <span>
-                                        {feature.title}
-                                        <span className='float-end mx-3'>
-                                            <Link href={feature.link} passHref>link</Link>
-                                        </span>
+                                    <span>{feature.title}</span>
+                                </td>
+                                <td className='d-none d-md-table-cell'>
+                                    <span style={{ fontSize: '0.8em' }} className=''>
+                                        <Link href={feature.link} passHref>{feature.date.replace('T', ' ').replace('Z', '').replace(/:\d\d$/, '')}</Link>
                                     </span>
-                                </td>
-                                <td>
-                                    <span>{feature.date.replace('T', ' ').replace('Z', '').replace(/:\d\d$/, '')}</span>
                                 </td>
                             </tr>
                         ))
                     }
                 </tbody>
+                <tfoot>
+                    <tr>
+                        <td colSpan='3'>
+                            <span className='text'>Articles are synced every 10 minutes. Evaluating sentiment is a slow process, so it may take a few minutes for the sentiment to appear.</span>
+                        </td>
+                    </tr>
+                </tfoot>
             </table>
         </div>
     );
@@ -83,7 +87,7 @@ function getSentiment(sentiment) {
     return result + ' ' + (sentiment || '');
 }
 
-export default Feature;
+export default ArticleTable;
 
 export async function ArticleTableSkeleton() {
     return (
@@ -104,7 +108,7 @@ export async function ArticleTableSkeleton() {
                                     <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style={{ width: '100%' }}></div>
                                 </div>
                             </td>
-                            <td>
+                            <td className='d-none d-md-table-cell'>
                                 <div className="spinner-border spinner-border-sm text-primary" role="status">
                                     <span className="sr-only" />
                                 </div>
@@ -123,7 +127,7 @@ async function TableHeader() {
             <tr>
                 <th scope="col" className='col-1'>Sentiment</th>
                 <th scope="col" className='col-9'>Title</th>
-                <th scope="col" className='col-2'>Published</th>
+                <th scope="col" className='col-2 d-none d-md-table-cell'>Published</th>
             </tr>
         </thead>
     );
