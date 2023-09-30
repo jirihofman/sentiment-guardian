@@ -9,7 +9,6 @@ Based on [jirihofman/nextjs-fullstack-app-template](https://github.com/jirihofma
 [![codecov](https://codecov.io/gh/jirihofman/sentiment-guardian/branch/master/graph/badge.svg)](https://codecov.io/gh/jirihofman/sentiment-guardian)
 
 # TODO
-- [ ] setup codecov
-- [ ] add @vercel/analytics
+- [x] setup codecov
 - [ ] make a page visually similar to The Guardian headline section and add sentiment emojis to it? 
 - [ ] cache the stuff in components/article-table (requests/month, Data transfer)
