@@ -1,7 +1,7 @@
 import Link from 'next/link';
 // import Image from 'next/image';
 import range from 'lodash/range';
-import { getArticlesKvGuardian0 } from '../../lib/data';
+import { getArticlesKvGuardian } from '../../lib/data';
 import { toInteger } from 'lodash';
 
 const header = 'Latest Guardian headlines';
@@ -10,7 +10,7 @@ export const revalidate = 60;
 
 const ArticleTable = async () => {
 
-    const articles = await getArticlesKvGuardian0();
+    const articles = await getArticlesKvGuardian();
     // eslint-disable-next-line no-console
     console.log('Loaded %d cached articles', articles.length);
 
