@@ -74,13 +74,11 @@ export async function GET(req, res) {
         }
     }
 
+    await kv.set('articles-last-updated', new Date().toISOString());
+    if (articlesAdded.length) {
+        await kv.set('articles-last-added', new Date().toISOString());
+    }
+
     // Select latest 100 articles from KV.
     return new Response(JSON.stringify(articlesAdded, null, 4));
 }
-
-// export async function POST(request) {
-
-// 	// Get articles from KV without sentiment.
-// 	const articles = await kv.zrange('article:guardian', 0, -1, { count: 20, offset: 0, rev: true, withScores: false });
-
-// // const rss = await fetch('https://www.theguardian.com/international/rss', { next: { revalidate: 60 }}).then(res => res.text());
