@@ -30,18 +30,6 @@ jobs:
     #     node-version: [16.x]
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
     steps:
-    - name: Set up MySQL
-      run: |
-        sudo /etc/init.d/mysql start
-        echo "MySQL started"
-        mysql -e 'SHOW DATABASES;' -u${{ env.DB_USER }} -p${{ env.DB_PASSWORD }}
-        echo "MySQL default databases"
-        mysql -e 'CREATE DATABASE ${{ env.DB_DATABASE }};' -u${{ env.DB_USER }} -p${{ env.DB_PASSWORD }}
-        echo "MySQL new database created"
-        mysql -e 'SHOW DATABASES;' -u${{ env.DB_USER }} -p${{ env.DB_PASSWORD }}
-        echo "MySQL default databases with the new one"
-        mysql -e 'ALTER USER "root"@"localhost" IDENTIFIED WITH mysql_native_password BY "${{ env.DB_PASSWORD }}";' -u${{ env.DB_USER }} -p${{ env.DB_PASSWORD }}
-        echo "MySQL user changed to be able to auth using username/password"
     - uses: actions/checkout@v3
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
@@ -61,40 +49,14 @@ jobs:
           ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-
     - name: Install 🛠
       run: npm ci
-    # TODO: Replace Knex migrations with an ORM
-    # - name: Knex migrations 💾
-    #   run: |
-    #     npm run migrate:latest
-    #     npm run seed:run
-
-    # - name: Test 🧪
-    #   env:
-    #     GH_TOKEN: ${{ github.token }}
-    #   run: |
-    #     echo Run all the sh!t with a single command runnable on devs' machines
-    #     npm run test:ci
-    # - name: End to end tests run 🧪
-    #   uses: cypress-io/github-action@v5.0.2
-    #   with:
-    #     # we have already installed all dependencies above
-    #     install: false
-    #     build: npm run build
-    #     start: npm run start
-    #     wait-on: 'http://localhost:5100/api/status'
-    #     wait-on-timeout: 20
-    #     browser: chrome
     #     config: 'baseUrl=http://localhost:5100'
     - run: npm run pretest
     - run: npm run test:coverage:prepare-folders
     - run: npm run test:coverage:jest
     - run: npm run test:coverage:component
-    
-    #- run: npm run test:db:clear
-    #- run: npm run test:db:init
     - run: npm run test:build
     - run: npm run test:start & npm run test:wait-on
     - run: npm run test:cy:run
-
     - run: npm run posttest
     - run: npm run report:combined
     - name: Upload coverage reports to Codecov
