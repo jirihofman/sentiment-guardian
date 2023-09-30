@@ -91,8 +91,11 @@ export default ArticleTable;
 
 export async function ArticleTableSkeleton() {
     return (
-        <div className='container px-4 py-0'>
+        <div className='container px-4 py-0 my-3'>
             <h2 className="pb-2 border-bottom" id='features'>{header}</h2>
+            <div className='mx-1 p-1'>
+                Average sentiment is loading...
+            </div>
             <table className="table">
                 <TableHeader />
                 <tbody>
