@@ -3,20 +3,8 @@
 import pjson from '../../package.json';
 import { Container, Modal, Nav, Navbar } from 'react-bootstrap';
 import Link from 'next/link';
-// import Buttons from '../buttons';
-// import { UserButton, useSession, useUser } from '@clerk/nextjs';
 
 export default function Header() {
-
-    // const { isLoaded, isSignedIn } = useSession();
-    // const { user } = useUser();
-    // const isAdmin = user?.emailAddresses?.find(email => email.emailAddress === pjson.author.email);
-
-    // const handleSignInClick = (evt) => {
-    //     evt.preventDefault();
-    //     // Redirect to sign-in page.
-    //     window.location.href = '/sign-in';
-    // };
 
     return (
         <header>
@@ -34,14 +22,6 @@ export default function Header() {
                         <Nav className='me-auto'>
                             <Link passHref href="/faq" legacyBehavior><Nav.Link>FAQ</Nav.Link></Link>
                             <Nav.Link role='button' data-bs-toggle='modal' data-bs-target='#exampleModal'>About</Nav.Link>
-                            {/* <Nav.Item>{isAdmin && <Buttons />}</Nav.Item> */}
-                            {/* <Nav>
-                                {!isLoaded && <div className="spinner-border spinner-border-sm text-primary" role="status">
-                                    <span className="sr-only" />
-                                </div>}
-                                {!isSignedIn && isLoaded && <button className='btn-sm btn btn-outline-primary' onClick={handleSignInClick}>Sign in</button>}
-                                <UserButton afterSignOutUrl="/" />
-                            </Nav> */}
                         </Nav>
                     </Navbar.Collapse>
                 </Container>

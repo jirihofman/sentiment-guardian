@@ -6,7 +6,7 @@
   },
   "description": "Tracker of the sentiment of the Guardian latest headlines. It uses OpenAI's GPT-4 model.",
   "displayName": "The Sentiment of The Guardian",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "private": false,
   "license": "MIT",
   "engines": {
@@ -33,14 +33,12 @@
     "test:e2e:component": "NODE_ENV=test cypress run --component --browser chrome"
   },
   "dependencies": {
-    "@clerk/nextjs": "^4.25.0",
     "@vercel/analytics": "^1.0.2",
     "@vercel/kv": "^0.2.3",
     "bootstrap": "^5.2.1",
     "lodash": "^4.17.21",
     "next": "^13.5.3",
     "node-html-parser": "^6.1.10",
-    "notiflix": "^3.2.6",
     "openai": "^4.10.0",
     "react": "^18.2.0",
     "react-bootstrap": "^2.3.1",
@@ -60,8 +58,7 @@
     "eslint-plugin-cypress": "^2.12.1",
     "eslint-plugin-jest": "^27.2.1",
     "husky": "^7.0.4",
-    "jest": "latest",
-    "wait-on": "^7.0.1"
+    "jest": "latest"
   },
   "nyc": {
     "report-dir": "cypress-coverage",

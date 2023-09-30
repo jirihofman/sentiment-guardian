@@ -1,5 +1,4 @@
 import Script from 'next/script';
-import { ClerkProvider } from '@clerk/nextjs';
 import { Analytics } from '@vercel/analytics/react';
 import Main from '../components/layout/main';
 import pjson from '../package.json';
@@ -13,14 +12,12 @@ export default async function LocaleLayout({ children }) {
             <head>
                 <Script src='https://cdn.jsdelivr.net/npm/bootstrap@5.2.3' crossOrigin='anonymous' defer />
             </head>
-            <ClerkProvider>
-                <body suppressHydrationWarning={true}>
-                    <Main>
-                        <main>{children}</main>
-                    </Main>
-                    <Analytics />
-                </body>
-            </ClerkProvider>
+            <body suppressHydrationWarning={true}>
+                <Main>
+                    <main>{children}</main>
+                </Main>
+                <Analytics />
+            </body>
         </html>
     );
 }
