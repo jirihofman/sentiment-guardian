@@ -16,5 +16,5 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - run: echo "Using Node.js version $(node -v)"
-    - run: curl https://sentiment-guardian.vercel.app/api/articles?adminApiKey=$ADMIN_API_KEY
+    - run: curl https://sentiment-guardian.vercel.app/api/articles?adminApiKey=${{ secrets.ADMIN_API_KEY }}
     - run: echo "Done!"
