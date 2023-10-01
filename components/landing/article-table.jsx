@@ -32,8 +32,36 @@ const ArticleTable = async () => {
                 {header}
             </h2>
             <div className='mx-1 p-1'>
-                Average sentiment for the last {articles.length} headlines: {averageSentimentEmoji}
-                {JSON.stringify(summary, null, 2)}
+                <div className="row row-cols-1 row-cols-md-2 g-4">
+                    <div className="col">
+                        <div className="card h-100">
+                            <div className="card-header">
+                                Average sentiment for the last {articles.length} headlines
+                            </div>
+                            <div className="card-body">
+                                <span style={{ fontSize: '3em' }}>{averageSentimentEmoji}</span>
+                                <span className='secondary'> (out of 100)</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="col">
+                        <div className="card h-100">
+                            <div className="card-header">
+                                Categories
+                            </div>
+                            <div className="card-body">
+                                {JSON.stringify(summary)}
+                                {['🥶', '🥵', '🧐'].map((emoji, index) => (
+                                    <span
+                                        key={index}
+                                        className={`fa fa-${emoji} fa-${14 * index}`}
+                                        style={{ fontSize: `${14 * (index + 1)}px` }}
+                                    >{emoji}</span>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
             <table className="table">
                 <TableHeader />
