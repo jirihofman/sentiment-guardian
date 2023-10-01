@@ -1,7 +1,7 @@
 import Link from 'next/link';
 // import Image from 'next/image';
 import range from 'lodash/range';
-import { getArticlesKvGuardian } from '../../lib/data';
+import { getArticlesKvGuardian, getCategoriesSummaryKvGuardian } from '../../lib/data';
 import { toInteger } from 'lodash';
 
 const header = 'Latest Guardian headlines';
@@ -10,9 +10,15 @@ export const revalidate = 60;
 
 const ArticleTable = async () => {
 
-    const articles = await getArticlesKvGuardian();
+    // eslint-disable-next-line no-undef
+    const [ articles, summary ] = await Promise.all([
+        getArticlesKvGuardian(),
+        getCategoriesSummaryKvGuardian()
+    ]);
     // eslint-disable-next-line no-console
     console.log('Loaded %d cached articles', articles.length);
+    // eslint-disable-next-line no-console
+    console.log('Loaded %d cached categories', Object.keys(summary).length);
 
     const averageSentiment = articles
         .map(feature => toInteger(feature.sentiment))
@@ -27,6 +33,7 @@ const ArticleTable = async () => {
             </h2>
             <div className='mx-1 p-1'>
                 Average sentiment for the last {articles.length} headlines: {averageSentimentEmoji}
+                {JSON.stringify(summary, null, 2)}
             </div>
             <table className="table">
                 <TableHeader />
