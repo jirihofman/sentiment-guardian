@@ -1,4 +1,5 @@
 /* ensure all pages have Bootstrap CSS */
+@import url('https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css');
 .md-container {
 	max-width: 800px;
 	padding-top: 2rem;

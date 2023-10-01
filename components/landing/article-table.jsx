@@ -13,7 +13,7 @@ const ArticleTable = async () => {
     // eslint-disable-next-line no-undef
     const [ articles, summary ] = await Promise.all([
         getArticlesKvGuardian(),
-        getCategoriesSummaryKvGuardian()
+        getCategoriesSummaryKvGuardian(),
     ]);
     // eslint-disable-next-line no-console
     console.log('Loaded %d cached articles', articles.length);
@@ -25,22 +25,19 @@ const ArticleTable = async () => {
         .reduce((a, b) => a + b, 0) / articles.length;
 
     const averageSentimentEmoji = getSentiment(averageSentiment);
+    // Add total number of articles to the summary to easily calculate ratios.
+    summary.total = articles.length;
 
     return (
         <div className='container px-4 py-0 my-3'>
-            <h2 className="pb-2 border-bottom" id='features'>
-                {header}
-            </h2>
-            <div className='mx-1 p-1'>
-                <div className="row row-cols-1 row-cols-md-2 g-4">
+            <div className='mx-0 p-0'>
+                <div className="row row-cols-1 row-cols-md-2 g-2 mb-2">
                     <div className="col">
                         <div className="card h-100">
-                            <div className="card-header">
-                                Average sentiment for the last {articles.length} headlines
-                            </div>
-                            <div className="card-body">
+                            <div className="card-header">Average</div>
+                            <div className="card-body text-center" style={{ height: '120px' }}>
                                 <span style={{ fontSize: '3em' }}>{averageSentimentEmoji}</span>
-                                <span className='secondary'> (out of 100)</span>
+                                <span className='text-muted'> (out of 100)</span>
                             </div>
                         </div>
                     </div>
@@ -49,20 +46,14 @@ const ArticleTable = async () => {
                             <div className="card-header">
                                 Categories
                             </div>
-                            <div className="card-body">
-                                {JSON.stringify(summary)}
-                                {['🥶', '🥵', '🧐'].map((emoji, index) => (
-                                    <span
-                                        key={index}
-                                        className={`fa fa-${emoji} fa-${14 * index}`}
-                                        style={{ fontSize: `${14 * (index + 1)}px` }}
-                                    >{emoji}</span>
-                                ))}
+                            <div className="card-body p-0 m-0 text-center" style={{ height: '120px' }}>
+                                <SummaryCategories summary={summary} />
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+            <h2 className="pb-2 border-bottom">{header}</h2>
             <table className="table">
                 <TableHeader />
                 <tbody>
@@ -131,10 +122,35 @@ export default ArticleTable;
 export async function ArticleTableSkeleton() {
     return (
         <div className='container px-4 py-0 my-3'>
-            <h2 className="pb-2 border-bottom" id='features'>{header}</h2>
-            <div className='mx-1 p-1'>
-                Average sentiment is loading...
+            <div className='mx-0 p-0'>
+                <div className="row row-cols-1 row-cols-md-2 g-2 mb-2">
+                    <div className="col">
+                        <div className="card h-100">
+                            <div className="card-header">Average</div>
+                            <div className="card-body text-center" style={{ fontSize: '3em', height: '120px' }}>
+                                <span>
+                                    <div className="spinner-border spinner-border-sm text-primary" role="status">
+                                        <span className="sr-only" />
+                                    </div>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="col">
+                        <div className="card h-100">
+                            <div className="card-header">
+                                Categories
+                            </div>
+                            <div className="card-body text-center" style={{ fontSize: '3em', height: '120px' }}>
+                                <div className="spinner-border spinner-border-sm text-primary" role="status">
+                                    <span className="sr-only" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
+            <h2 className="pb-2 border-bottom" id='features'>{header}</h2>
             <table className="table">
                 <TableHeader />
                 <tbody>
@@ -172,5 +188,27 @@ async function TableHeader() {
                 <th scope="col" className='col-2 d-none d-md-table-cell'>Published</th>
             </tr>
         </thead>
+    );
+}
+
+/** Shows five emojis with variable font-size based on their ratio. */
+async function SummaryCategories({ summary }) {
+
+    return (
+        <div>
+            {
+                Object.keys(summary).filter(key => key !== 'total').map((key, index) => {
+
+                    const value = summary[key] || 0;
+                    if (!value) {
+                        return null;
+                    }
+                    const ratio = value / summary.total;
+                    const fontSize = Math.max(1, ratio * 15) + 'em';
+
+                    return <span key={index} style={{ fontSize }} title={value}>{key}</span>;
+                })
+            }
+        </div>
     );
 }
