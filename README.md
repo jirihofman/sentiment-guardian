@@ -10,3 +10,14 @@ Based on [jirihofman/nextjs-fullstack-app-template](https://github.com/jirihofma
 
 # TODO
 - [ ] make a page visually similar to The Guardian headline section and add sentiment emojis to it? 
+
+# Dev notes, debug
+## redis@vercel/kv
+```sh
+# Set initial categories for existing articles
+set category:guardian:NEG1 8
+set category:guardian:NEG2 5
+set category:guardian:NEU 6
+set category:guardian:POS1 1
+set category:guardian:NEU 0
+```

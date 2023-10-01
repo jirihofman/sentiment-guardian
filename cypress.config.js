@@ -1,7 +1,7 @@
-const { defineConfig } = require('cypress');
-const codeCoverageTask = require('@cypress/code-coverage/task');
+import { defineConfig } from 'cypress';
+import codeCoverageTask from '@cypress/code-coverage/task';
 
-module.exports = defineConfig({
+const config = defineConfig({
     chromeWebSecurity: false,
     component: {
         devServer: {
@@ -43,3 +43,5 @@ module.exports = defineConfig({
     videosFolder: 'cypress/videos',
     videoUploadOnPasses: false,
 });
+
+export default config;

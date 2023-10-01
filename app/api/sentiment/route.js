@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 import OpenAI from 'openai';
 import { kv } from '@vercel/kv';
+import { getSentimentCategoryByNumber } from '../../../util/util';
 
 const openai = new OpenAI();
 
@@ -39,11 +40,15 @@ async function doAllTheShit() {
         const updated = await kv.zadd('article:guardian', {
             member: JSON.stringify({
                 ...article,
-                sentiment: sentiment
+                sentiment
             }),
             score: score,
         });
         console.log('updated', updated);
+        const sentimentCategory = getSentimentCategoryByNumber(sentiment);
+        console.log('sentimentCategory', sentimentCategory);
+        // Add the article to the sentiment category KV.
+        await kv.incr('category:guardian:' + sentimentCategory);
         processed++;
     }
 

@@ -1,7 +1,7 @@
 import Link from 'next/link';
 // import Image from 'next/image';
 import range from 'lodash/range';
-import { getArticlesKvGuardian } from '../../lib/data';
+import { getArticlesKvGuardian, getCategoriesSummaryKvGuardian } from '../../lib/data';
 import { toInteger } from 'lodash';
 
 const header = 'Latest Guardian headlines';
@@ -10,43 +10,73 @@ export const revalidate = 60;
 
 const ArticleTable = async () => {
 
-    const articles = await getArticlesKvGuardian();
+    // eslint-disable-next-line no-undef
+    const [ articles, summary ] = await Promise.all([
+        getArticlesKvGuardian(),
+        getCategoriesSummaryKvGuardian(),
+    ]);
     // eslint-disable-next-line no-console
     console.log('Loaded %d cached articles', articles.length);
+    // eslint-disable-next-line no-console
+    console.log('Loaded %d cached categories', Object.keys(summary).length);
 
     const averageSentiment = articles
         .map(feature => toInteger(feature.sentiment))
         .reduce((a, b) => a + b, 0) / articles.length;
 
     const averageSentimentEmoji = getSentiment(averageSentiment);
+    // Add total number of articles to the summary to easily calculate ratios.
+    summary.total = articles.length;
 
     return (
         <div className='container px-4 py-0 my-3'>
-            <h2 className="pb-2 border-bottom" id='features'>
-                {header}
-            </h2>
-            <div className='mx-1 p-1'>
-                Average sentiment for the last {articles.length} headlines: {averageSentimentEmoji}
+            <div className='mx-0 p-0'>
+                <div className="row row-cols-1 row-cols-md-2 g-2 mb-2">
+                    <div className="col">
+                        <div className="card h-100">
+                            <div className="card-header">Average</div>
+                            <div className="card-body text-center" style={{ height: '120px' }}>
+                                <span style={{ fontSize: '3em' }}>{averageSentimentEmoji}</span>
+                                <span className='text-muted'> (out of 100)</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="col">
+                        <div className="card h-100">
+                            <div className="card-header">
+                                Categories
+                            </div>
+                            <div className="card-body p-0 m-0 text-center" style={{ height: '120px' }}>
+                                <SummaryCategories summary={summary} />
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
+            <h2 className="pb-2 border-bottom">{header}</h2>
             <table className="table">
                 <TableHeader />
                 <tbody>
                     {
-                        articles.map((feature, key) => (
-                            <tr key={key}>
+                        articles.map((feature, key) => {
+
+                            const date = <span style={{ fontSize: '0.8em' }} className=''>
+                                <Link href={feature.link} passHref>{feature.date.replace('T', ' ').replace('Z', '').replace(/:\d\d$/, '')}</Link>
+                            </span>;
+
+                            return <tr key={key}>
                                 <td>
                                     <span style={{ fontSize: '1.5em' }}>{getSentiment(feature.sentiment)}</span>
                                 </td>
                                 <td>
-                                    <span>{feature.title}</span>
+                                    <div>{feature.title}</div>
+                                    <div className="d-inline d-sm-none">{date}</div>
                                 </td>
                                 <td className='d-none d-md-table-cell'>
-                                    <span style={{ fontSize: '0.8em' }} className=''>
-                                        <Link href={feature.link} passHref>{feature.date.replace('T', ' ').replace('Z', '').replace(/:\d\d$/, '')}</Link>
-                                    </span>
+                                    {date}
                                 </td>
-                            </tr>
-                        ))
+                            </tr>;
+                        })
                     }
                 </tbody>
                 <tfoot>
@@ -92,10 +122,35 @@ export default ArticleTable;
 export async function ArticleTableSkeleton() {
     return (
         <div className='container px-4 py-0 my-3'>
-            <h2 className="pb-2 border-bottom" id='features'>{header}</h2>
-            <div className='mx-1 p-1'>
-                Average sentiment is loading...
+            <div className='mx-0 p-0'>
+                <div className="row row-cols-1 row-cols-md-2 g-2 mb-2">
+                    <div className="col">
+                        <div className="card h-100">
+                            <div className="card-header">Average</div>
+                            <div className="card-body text-center" style={{ fontSize: '3em', height: '120px' }}>
+                                <span>
+                                    <div className="spinner-border spinner-border-sm text-primary" role="status">
+                                        <span className="sr-only" />
+                                    </div>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="col">
+                        <div className="card h-100">
+                            <div className="card-header">
+                                Categories
+                            </div>
+                            <div className="card-body text-center" style={{ fontSize: '3em', height: '120px' }}>
+                                <div className="spinner-border spinner-border-sm text-primary" role="status">
+                                    <span className="sr-only" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
+            <h2 className="pb-2 border-bottom" id='features'>{header}</h2>
             <table className="table">
                 <TableHeader />
                 <tbody>
@@ -133,5 +188,27 @@ async function TableHeader() {
                 <th scope="col" className='col-2 d-none d-md-table-cell'>Published</th>
             </tr>
         </thead>
+    );
+}
+
+/** Shows five emojis with variable font-size based on their ratio. */
+async function SummaryCategories({ summary }) {
+
+    return (
+        <div>
+            {
+                Object.keys(summary).filter(key => key !== 'total').map((key, index) => {
+
+                    const value = summary[key] || 0;
+                    if (!value) {
+                        return null;
+                    }
+                    const ratio = value / summary.total;
+                    const fontSize = Math.max(1, ratio * 15) + 'em';
+
+                    return <span key={index} style={{ fontSize }} title={value}>{key}</span>;
+                })
+            }
+        </div>
     );
 }

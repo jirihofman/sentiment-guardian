@@ -16,7 +16,7 @@ export default function Header() {
                     <Navbar.Toggle aria-controls="navbarScroll" />
                     <Navbar.Brand href="/">
                         <span className="d-none d-sm-inline">{pjson.displayName}</span>
-                        <span className="d-inline d-sm-none">{pjson.displayName.substring(0,13)}</span>                        
+                        <span className="d-inline d-sm-none">{pjson.displayName.substring(0,13)}</span>
                     </Navbar.Brand>
                     <Navbar.Collapse id="navbarScroll" className="justify-content-end">
                         <Nav className='me-auto'>
