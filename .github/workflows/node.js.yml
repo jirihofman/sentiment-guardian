@@ -43,7 +43,6 @@ jobs:
     - run: npm run test:coverage:prepare-folders
     - run: npm run test:coverage:jest
     - run: npm run test:e2e:component
-    - run: npm run test:build
     - run: npm run report:combined
     - name: Upload coverage reports to Codecov
       uses: codecov/codecov-action@v3

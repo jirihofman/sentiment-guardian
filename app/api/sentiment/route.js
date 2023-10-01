@@ -1,9 +1,6 @@
 /* eslint-disable no-console */
 import OpenAI from 'openai';
 import { kv } from '@vercel/kv';
-import { getAuth } from '@clerk/nextjs/server';
-import { clerkClient } from '@clerk/nextjs';
-import pjson from '../../../package.json';
 
 const openai = new OpenAI();
 
@@ -53,20 +50,6 @@ async function doAllTheShit() {
     return processed;
 }
 
-export async function GET(req) {
-
-    const { userId } = getAuth(req);
-    const user = userId ? await clerkClient.users.getUser(userId) : null;
-
-    if (!user || user.emailAddresses[0].emailAddress !== pjson.author.email) {
-        return new Response('Unauthorized to perform this action', { status: 403 });
-    }
-
-    const sentimentAdded = await doAllTheShit();
-
-    return new Response(sentimentAdded);
-}
-
 export async function POST(req) {
 
     // read adminApiKey from request body.
@@ -78,5 +61,4 @@ export async function POST(req) {
         console.log(process.env.ADMIN_API_KEY);
         return new Response('Unauthorized to perform this action', { status: 403 });
     }
-
 }

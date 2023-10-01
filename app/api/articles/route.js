@@ -2,9 +2,6 @@
 import { kv } from '@vercel/kv';
 import { parse } from 'node-html-parser';
 import xml2js from 'xml2js';
-import { getAuth } from '@clerk/nextjs/server';
-import { clerkClient } from '@clerk/nextjs';
-import pjson from '../../../package.json';
 
 export const revalidate = 0;
 
@@ -65,21 +62,6 @@ async function doAllTheShit() {
     }
 
     return articlesAdded;
-}
-
-// Called from UI when signed-in.
-export async function GET(req) {
-
-    const { userId } = getAuth(req);
-    const user = userId ? await clerkClient.users.getUser(userId) : null;
-
-    if (!user || user.emailAddresses[0].emailAddress !== pjson.author.email) {
-        return new Response('Unauthorized to perform this action', { status: 403 });
-    }
-
-    const articlesAdded = await doAllTheShit();
-
-    return new Response(JSON.stringify(articlesAdded, null, 4));
 }
 
 // Called from GitHub Actions with adminApiKey.
