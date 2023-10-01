@@ -6,9 +6,10 @@
   },
   "description": "Tracker of the sentiment of the Guardian latest headlines. It uses OpenAI's GPT-4 model.",
   "displayName": "The Sentiment of The Guardian",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "private": false,
   "license": "MIT",
+  "type": "module",
   "engines": {
     "node": ">=18.0.0",
     "npm": ">=8.0.0"
@@ -20,7 +21,7 @@
     "lint": "next lint",
     "prepare": "husky install",
     "test": "npm run test:coverage:jest && npm run test:e2e:component",
-    "test:jest": "jest --watch",
+    "test:jest": "node --experimental-vm-modules node_modules/jest/bin/jest.js --watch",
     "test:build": "NODE_ENV=test next build",
     "test:start": "NODE_ENV=test next start -p 5100",
     "pretest": "rm -rf coverage jest-coverage cypress-coverage .nyc_output || true",
@@ -29,7 +30,7 @@
     "combine:reports": "npx nyc merge reports && mv coverage.json .nyc_output/out.json",
     "prereport:combined": "npm run combine:reports",
     "report:combined": "npx nyc report --reporter lcov --reporter text --report-dir coverage",
-    "test:coverage:jest": "NODE_ENV=test jest && cp jest-coverage/coverage-final.json reports/from-jest.json",
+    "test:coverage:jest": "NODE_ENV=test node --experimental-vm-modules node_modules/jest/bin/jest.js && cp jest-coverage/coverage-final.json reports/from-jest.json",
     "test:e2e:component": "NODE_ENV=test cypress run --component --browser chrome"
   },
   "dependencies": {
