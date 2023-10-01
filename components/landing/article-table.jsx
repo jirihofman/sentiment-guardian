@@ -32,21 +32,25 @@ const ArticleTable = async () => {
                 <TableHeader />
                 <tbody>
                     {
-                        articles.map((feature, key) => (
-                            <tr key={key}>
+                        articles.map((feature, key) => {
+
+                            const date = <span style={{ fontSize: '0.8em' }} className=''>
+                                <Link href={feature.link} passHref>{feature.date.replace('T', ' ').replace('Z', '').replace(/:\d\d$/, '')}</Link>
+                            </span>;
+
+                            return <tr key={key}>
                                 <td>
                                     <span style={{ fontSize: '1.5em' }}>{getSentiment(feature.sentiment)}</span>
                                 </td>
                                 <td>
-                                    <span>{feature.title}</span>
+                                    <div>{feature.title}</div>
+                                    <div className="d-inline d-sm-none">{date}</div>
                                 </td>
                                 <td className='d-none d-md-table-cell'>
-                                    <span style={{ fontSize: '0.8em' }} className=''>
-                                        <Link href={feature.link} passHref>{feature.date.replace('T', ' ').replace('Z', '').replace(/:\d\d$/, '')}</Link>
-                                    </span>
+                                    {date}
                                 </td>
-                            </tr>
-                        ))
+                            </tr>;
+                        })
                     }
                 </tbody>
                 <tfoot>
