@@ -194,7 +194,7 @@ async function SummaryCategories({ summary }) {
     const total = Object.keys(summary).reduce((a, b) => a + summary[b], 0);
 
     return (
-        <div style={{ marginLeft: '-0em' }}>
+        <div style={{ marginLeft: '-5px' }}>
             {
                 Object.keys(summary).filter(key => key !== 'total').map((key, index) => {
 
