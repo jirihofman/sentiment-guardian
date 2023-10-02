@@ -205,7 +205,7 @@ async function SummaryCategories({ summary }) {
                     const ratio = value / total;
                     const fontSize = Math.max(1, ratio * 7).toFixed(2) + 'em';
 
-                    return <span key={index} style={{ fontSize }} title={value}>{key}</span >;
+                    return <span key={index} style={{ fontSize, marginLeft: '-5px' }} title={value}>{key}</span >;
                 })
             }
         </div>
