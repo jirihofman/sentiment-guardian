@@ -25,8 +25,6 @@ const ArticleTable = async () => {
         .reduce((a, b) => a + b, 0) / articles.length;
 
     const averageSentimentEmoji = getSentiment(averageSentiment);
-    // Add total number of articles to the summary to easily calculate ratios.
-    summary.total = articles.length;
 
     return (
         <div className='container px-4 py-0 my-3'>
@@ -194,6 +192,8 @@ async function TableHeader() {
 /** Shows five emojis with variable font-size based on their ratio. */
 async function SummaryCategories({ summary }) {
 
+    const total = Object.keys(summary).reduce((a, b) => a + summary[b], 0);
+
     return (
         <div>
             {
@@ -203,10 +203,10 @@ async function SummaryCategories({ summary }) {
                     if (!value) {
                         return null;
                     }
-                    const ratio = value / summary.total;
-                    const fontSize = Math.max(1, ratio * 15) + 'em';
+                    const ratio = value / total;
+                    const fontSize = Math.max(1, ratio * 10).toFixed(2) + 'em';
 
-                    return <span key={index} style={{ fontSize }} title={value}>{key}</span>;
+                    return <span className='' key={index} style={{ fontSize }} title={value}>{key}</span >;
                 })
             }
         </div>
