@@ -24,15 +24,13 @@ async function doAllTheShit() {
     const titlesFromRss = parsed.rss.channel[0].item.map(item => item.title[0]);
     console.log('titlesFromRss', titlesFromRss);
     const articlesFromRss = parsed.rss.channel[0].item.map(item => ({
-        category: [...item.category].map(category => category._),
+        // category: [...item.category].map(category => category._),
         date: item['dc:date'][0],
         // Takes too much space in KV.
         // description: item.description[0],
         link: item.link[0],
         title: item.title[0],
     }))
-        // Remove articles in Sport category.
-        .filter(article => !article.category.includes('Sport'))
         // Remove articles not in HTML headlines. Compare end of the article.link with html link.
         .filter(article => links.find(link => article.link.endsWith(link)));
 
