@@ -29,13 +29,12 @@ const ArticleTable = async () => {
     return (
         <div className='container px-4 py-0 my-3'>
             <div className='mx-0 p-0'>
-                <div className="row row-cols-1 row-cols-md-2 g-2 mb-2">
+                <div className="row row-cols-1 row-cols-2 g-2 mb-2">
                     <div className="col">
                         <div className="card h-100">
-                            <div className="card-header">Average</div>
-                            <div className="card-body text-center" style={{ height: '120px' }}>
-                                <span style={{ fontSize: '3em' }}>{averageSentimentEmoji}</span>
-                                <span className='text-muted'> (out of 100)</span>
+                            <div className="card-header">Average <span className='text-secondary' style={{ fontSize: '0.5em' }}>(out of 100)</span></div>
+                            <div className="card-body text-center m-0 p-0" style={{ height: '120px' }}>
+                                <span style={{ fontSize: '2.5em' }}>{averageSentimentEmoji}</span>
                             </div>
                         </div>
                     </div>
@@ -121,11 +120,11 @@ export async function ArticleTableSkeleton() {
     return (
         <div className='container px-4 py-0 my-3'>
             <div className='mx-0 p-0'>
-                <div className="row row-cols-1 row-cols-md-2 g-2 mb-2">
+                <div className="row row-cols-1 row-cols-2 g-2 mb-2">
                     <div className="col">
                         <div className="card h-100">
-                            <div className="card-header">Average</div>
-                            <div className="card-body text-center" style={{ fontSize: '3em', height: '120px' }}>
+                            <div className="card-header">Average <span className='text-secondary' style={{ fontSize: '0.5em' }}>(out of 100)</span></div>
+                            <div className="card-body text-center" style={{ fontSize: '2.5em', height: '120px' }}>
                                 <span>
                                     <div className="spinner-border spinner-border-sm text-primary" role="status">
                                         <span className="sr-only" />
@@ -195,7 +194,7 @@ async function SummaryCategories({ summary }) {
     const total = Object.keys(summary).reduce((a, b) => a + summary[b], 0);
 
     return (
-        <div>
+        <div style={{ marginLeft: '-5px' }}>
             {
                 Object.keys(summary).filter(key => key !== 'total').map((key, index) => {
 
@@ -204,9 +203,9 @@ async function SummaryCategories({ summary }) {
                         return null;
                     }
                     const ratio = value / total;
-                    const fontSize = Math.max(1, ratio * 10).toFixed(2) + 'em';
+                    const fontSize = Math.max(1, ratio * 7).toFixed(2) + 'em';
 
-                    return <span className='' key={index} style={{ fontSize }} title={value}>{key}</span >;
+                    return <span key={index} style={{ fontSize, marginLeft: '-5px' }} title={value}>{key}</span >;
                 })
             }
         </div>
