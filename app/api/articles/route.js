@@ -16,7 +16,7 @@ async function doAllTheShit() {
     console.log('headlines', headlines);
 
     // Add missing articles to KV without sentiment.
-    // Supposed to run every hour or 10 minutes. Need RSS to get the date which is transformed into a score.
+    // Supposed to run every 20 minutes. Need RSS to get the date which is transformed into a score.
     const newspaper = 'guardian';
     const rss = await fetch('https://www.theguardian.com/international/rss', { next: { revalidate: 0 }}).then(res => res.text());
     const parser = new xml2js.Parser();

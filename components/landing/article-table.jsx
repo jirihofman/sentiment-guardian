@@ -79,7 +79,7 @@ const ArticleTable = async () => {
                 <tfoot>
                     <tr>
                         <td colSpan='3'>
-                            <span className='text'>Articles are synced every 10 minutes. Evaluating sentiment is a slow process, so it may take a few minutes for the sentiment to appear.</span>
+                            <span className='text'>Articles are synced every 20 minutes. Evaluating sentiment is a slow process, so it may take a few minutes for the sentiment to appear.</span>
                         </td>
                     </tr>
                 </tfoot>

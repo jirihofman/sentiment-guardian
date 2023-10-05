@@ -1,9 +1,9 @@
 name: Articles CI
-# Runs every 10 minutes and on manual trigger
+# Runs every 20 minutes and on manual trigger
 on:
   schedule:
-    # Run every 10 minutes
-    - cron: '*/10 * * * *'
+    # Run every 20 minutes
+    - cron: '*/20 * * * *'
   workflow_dispatch:
 
 env:
