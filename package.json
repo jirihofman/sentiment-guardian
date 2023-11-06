@@ -39,7 +39,7 @@
     "bootstrap": "^5.2.1",
     "lodash": "^4.17.21",
     "next": "^14.0.0",
-    "node-html-parser": "^6.1.10",
+    "node-html-parser": "^6.1.11",
     "openai": "^4.10.0",
     "react": "^18.2.0",
     "react-bootstrap": "^2.3.1",
