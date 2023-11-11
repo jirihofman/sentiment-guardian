@@ -20,9 +20,9 @@ const ArticleTable = async () => {
     // eslint-disable-next-line no-console
     console.log('Loaded %d cached categories', Object.keys(summary).length);
 
-    const averageSentiment = articles
+    const averageSentiment = Math.round(articles
         .map(feature => toInteger(feature.sentiment))
-        .reduce((a, b) => a + b, 0) / articles.length;
+        .reduce((a, b) => a + b, 0) / articles.length);
 
     const averageSentimentEmoji = getSentiment(averageSentiment);
 
