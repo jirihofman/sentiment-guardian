@@ -35,7 +35,7 @@
   },
   "dependencies": {
     "@vercel/analytics": "^1.1.1",
-    "@vercel/kv": "^0.2.4",
+    "@vercel/kv": "^1.0.0",
     "bootstrap": "^5.2.1",
     "lodash": "^4.17.21",
     "next": "^14.0.2",
