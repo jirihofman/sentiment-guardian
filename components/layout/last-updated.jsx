@@ -20,7 +20,7 @@ export default async function LastUpdated() {
 
     return (
         <div className="text-muted small">
-			Sentiment last updated: {date}
+			Articles last checked: {date} UTC
         </div>
     );
 }
