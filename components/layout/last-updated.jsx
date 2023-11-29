@@ -5,10 +5,12 @@ export default async function LastUpdated() {
         }
     });
     const data = await res.json();
+    // Format `data.result` to YYYY-MM-DD HH:MM:SS UTC
+    const date = new Date(data.result).toISOString().replace('T', ' ').replace(/\..+/, '');
 
     return (
         <div className="text-muted small">
-			Sentiment last updated: {data.result}
+			Sentiment last updated: {date}
         </div>
     );
 }
