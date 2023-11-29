@@ -34,8 +34,8 @@
     "test:e2e:component": "NODE_ENV=test cypress run --component --browser chrome"
   },
   "dependencies": {
+    "@upstash/redis": "^1.25.1",
     "@vercel/analytics": "^1.1.1",
-    "@vercel/kv": "^1.0.0",
     "bootstrap": "^5.2.1",
     "lodash": "^4.17.21",
     "next": "^14.0.2",

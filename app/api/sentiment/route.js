@@ -1,14 +1,19 @@
 /* eslint-disable no-console */
 import OpenAI from 'openai';
-import { kv } from '@vercel/kv';
+import { Redis } from '@upstash/redis';
 import { getSentimentCategoryByNumber } from '../../../util/util';
 
 const openai = new OpenAI();
 
 export const revalidate = 0;
 
+const redis = new Redis({
+    token: process.env.UPSTASH_REDIS_REST_TOKEN,
+    url: process.env.UPSTASH_REDIS_REST_URL,
+});
+
 async function doAllTheShit() {
-    const articles = await kv.zrange('article:guardian', 0, -1, { count: 100, offset: 0, rev: true, withScores: false });
+    const articles = await redis.zrange('article:guardian', 0, -1, { count: 100, offset: 0, rev: true, withScores: false });
     const articlesWithoutSentiment = articles.filter(article => !article.sentiment);
     const max = 2;
     let processed = 0;
@@ -31,13 +36,13 @@ async function doAllTheShit() {
         const sentiment = chatCompletion.choices[0].message.content;
         console.log('sentiment', sentiment);
 
-        // Delete the article from KV.
-        const deleted = await kv.zrem('article:guardian', JSON.stringify(article));
+        // Delete the article from Redis.
+        const deleted = await redis.zrem('article:guardian', JSON.stringify(article));
         console.log('deleted', deleted);
-        // Add the article back to KV with sentiment.
+        // Add the article back to Redis with sentiment.
         const score = article.date.replace(/-/g, '').replace(/:/g, '').replace(/T/g, '').replace(/Z/g, '').replace(' ', '');
         console.log('score', score);
-        const updated = await kv.zadd('article:guardian', {
+        const updated = await redis.zadd('article:guardian', {
             member: JSON.stringify({
                 ...article,
                 sentiment
@@ -47,8 +52,8 @@ async function doAllTheShit() {
         console.log('updated', updated);
         const sentimentCategory = getSentimentCategoryByNumber(sentiment);
         console.log('sentimentCategory', sentimentCategory);
-        // Add the article to the sentiment category KV.
-        await kv.incr('category:guardian:' + sentimentCategory);
+        // Add the article to the sentiment category.
+        await redis.incr('category:guardian:' + sentimentCategory);
         processed++;
     }
 
