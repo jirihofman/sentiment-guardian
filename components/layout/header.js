@@ -38,11 +38,11 @@ export default function Header() {
                             <table>
                                 <tbody>
                                     <tr>
-                                        <th>Version</th>
-                                        <td>{pjson.version}</td>
+                                        <th>Version:</th>
+                                        <td>{[process.env.NEXT_PUBLIC_NODE_ENV || process.env.NODE_ENV, pjson.version].join('-')}</td>
                                     </tr>
                                     <tr>
-                                        <th>GitHub</th>
+                                        <th>GitHub:</th>
                                         <td>
                                             <Link
                                                 passHref
