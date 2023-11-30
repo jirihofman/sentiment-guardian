@@ -3,6 +3,8 @@ This app periodically loads headlines from The Guardian and evaluates their sent
 
 It used to use GPT-3.5-turbo model but its results were not ideal. GPT-4 performs much better even though it is a bit pricier. To compensate for that we don't send article description anymore.
 
+Since 2023-11-30 `gpt-4-1106-preview` is used to save some bucks.
+
 # Nextjs app template
 Based on [jirihofman/nextjs-fullstack-app-template](https://github.com/jirihofman/nextjs-fullstack-app-template).
 

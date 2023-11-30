@@ -29,7 +29,7 @@ async function doAllTheShit() {
         //  Article text is: ${article.description}
         const chatCompletion = await openai.chat.completions.create({
             messages: [{ content: message, role: 'user' }],
-            model: 'gpt-4',
+            model: 'gpt-4-1106-preview',
             user: 'The sentiment of The Guardian'
         });
         console.log('chatCompletion for article', article.title, chatCompletion.choices);

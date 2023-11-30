@@ -7,7 +7,7 @@ export default function Faq() {
         {
             answer: [
                 pjson.description,
-                'It periodically loads headlines from The Guardian and evaluates their sentiment using OpenAI\'s GPT-4 model.',
+                'It periodically loads headlines from The Guardian and evaluates their sentiment using OpenAI\'s gpt-4-1106-preview model.',
             ].join(' '),
             question: `What is ${pjson.displayName}?`,
         },
