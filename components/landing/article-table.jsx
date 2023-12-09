@@ -1,12 +1,38 @@
+import React from 'react'; // Add missing import
 import Link from 'next/link';
-// import Image from 'next/image';
 import range from 'lodash/range';
 import { getArticlesKvGuardian, getCategoriesSummaryKvGuardian } from '../../lib/data';
-import { toInteger } from 'lodash';
+import { getSentiment } from '../../util/util';
+import { Carousel } from 'react-bootstrap';
+import CarouselSummary from '../carousel/carousel-item-summary';
+import CarouselCommentary from '../carousel/carousel-item-commentary';
+import PropTypes from 'prop-types';
 
 const header = 'Latest Guardian headlines';
 
-export const revalidate = 60;
+const carouselItemStyle = {
+    maxHeight: '200px',
+    overflow: 'hidden',
+};
+
+const FrontPageCarousel = ({ articles, summary }) => (
+
+    <Carousel controls={true} indicators={false} variant='dark' style={{ boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)' }} interval={null} className='mb-2'>
+        <div className="carousel-item" style={carouselItemStyle}>
+            <CarouselSummary articles={articles} summary={summary} />
+            <div className="carousel-caption"></div>
+        </div>
+        <div className="carousel-item" style={carouselItemStyle}>
+            <CarouselCommentary comment={'AI generated comment on today\'s events in text and speech. Comming soon ...'} model={'bar'} />
+            <div className="carousel-caption"></div>
+        </div>
+    </Carousel>
+);
+
+FrontPageCarousel.propTypes = {
+    articles: PropTypes.array.isRequired,
+    summary: PropTypes.object.isRequired,
+};
 
 const ArticleTable = async () => {
 
@@ -20,36 +46,9 @@ const ArticleTable = async () => {
     // eslint-disable-next-line no-console
     console.log('Loaded %d cached categories', Object.keys(summary).length);
 
-    const averageSentiment = Math.round(articles
-        .map(feature => toInteger(feature.sentiment))
-        .reduce((a, b) => a + b, 0) / articles.length);
-
-    const averageSentimentEmoji = getSentiment(averageSentiment);
-
     return (
         <div className='container px-4 py-0 my-3'>
-            <div className='mx-0 p-0'>
-                <div className="row row-cols-1 row-cols-2 g-2 mb-2">
-                    <div className="col">
-                        <div className="card h-100">
-                            <div className="card-header">Average <span className='text-secondary' style={{ fontSize: '0.5em' }}>(out of 100)</span></div>
-                            <div className="card-body text-center m-0 p-0" style={{ height: '120px' }}>
-                                <span style={{ fontSize: '2.5em' }}>{averageSentimentEmoji}</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="col">
-                        <div className="card h-100">
-                            <div className="card-header">
-                                Categories
-                            </div>
-                            <div className="card-body p-0 m-0 text-center" style={{ height: '120px' }}>
-                                <SummaryCategories summary={summary} />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <FrontPageCarousel articles={articles} summary={summary} />
             <h2 className="pb-2 border-bottom">{header}</h2>
             <table className="table">
                 <TableHeader />
@@ -88,65 +87,12 @@ const ArticleTable = async () => {
     );
 };
 
-function getSentiment(sentiment) {
-
-    let result = '😐';
-    if (!sentiment) {
-        return '🤷';
-    }
-
-    if (sentiment > 60) {
-        if (sentiment > 80) {
-            result = '😁';
-        } else {
-            result = '🙂';
-        }
-    }
-
-    if (sentiment < 40) {
-        if (sentiment < 20) {
-            result = '😭';
-        } else {
-            result = '😔';
-        }
-    }
-
-    return result + ' ' + (sentiment || '');
-}
-
 export default ArticleTable;
 
 export async function ArticleTableSkeleton() {
     return (
         <div className='container px-4 py-0 my-3'>
-            <div className='mx-0 p-0'>
-                <div className="row row-cols-1 row-cols-2 g-2 mb-2">
-                    <div className="col">
-                        <div className="card h-100">
-                            <div className="card-header">Average <span className='text-secondary' style={{ fontSize: '0.5em' }}>(out of 100)</span></div>
-                            <div className="card-body text-center" style={{ fontSize: '2.5em', height: '120px' }}>
-                                <span>
-                                    <div className="spinner-border spinner-border-sm text-primary" role="status">
-                                        <span className="sr-only" />
-                                    </div>
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="col">
-                        <div className="card h-100">
-                            <div className="card-header">
-                                Categories
-                            </div>
-                            <div className="card-body text-center" style={{ fontSize: '3em', height: '120px' }}>
-                                <div className="spinner-border spinner-border-sm text-primary" role="status">
-                                    <span className="sr-only" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <FrontPageCarouselSkeleton />
             <h2 className="pb-2 border-bottom" id='features'>{header}</h2>
             <table className="table">
                 <TableHeader />
@@ -188,26 +134,21 @@ async function TableHeader() {
     );
 }
 
-/** Shows five emojis with variable font-size based on their ratio. */
-async function SummaryCategories({ summary }) {
+async function FrontPageCarouselSkeleton() {
 
-    const total = Object.keys(summary).reduce((a, b) => a + summary[b], 0);
+    const skeletonStyles = {
+        alignItems: 'center',
+        display: 'flex',
+        justifyContent: 'center',
+    };
 
     return (
-        <div style={{ marginLeft: '-5px' }}>
-            {
-                Object.keys(summary).filter(key => key !== 'total').map((key, index) => {
-
-                    const value = summary[key] || 0;
-                    if (!value) {
-                        return null;
-                    }
-                    const ratio = value / total;
-                    const fontSize = Math.max(1, ratio * 7).toFixed(2) + 'em';
-
-                    return <span key={index} style={{ fontSize, marginLeft: '-5px' }} title={value}>{key}</span >;
-                })
-            }
-        </div>
+        <Carousel style={{ boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)', height: '113px' }} interval={null} className='mb-2'>
+            <div className="carousel-item" key={1} style={{ ...carouselItemStyle, ...skeletonStyles }}>
+                <div className="spinner-border spinner-border-sm text-primary" role="status">
+                    <span className="sr-only" />
+                </div>
+            </div>
+        </Carousel>
     );
 }

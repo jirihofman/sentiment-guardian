@@ -26,3 +26,29 @@ export function getSentimentCategoryByNumber(sentiment) {
 
     return result;
 }
+
+export function getSentiment(sentiment) {
+
+    let result = '😐';
+    if (!sentiment) {
+        return '🤷';
+    }
+
+    if (sentiment > 60) {
+        if (sentiment > 80) {
+            result = '😁';
+        } else {
+            result = '🙂';
+        }
+    }
+
+    if (sentiment < 40) {
+        if (sentiment < 20) {
+            result = '😭';
+        } else {
+            result = '😔';
+        }
+    }
+
+    return result + ' ' + (sentiment || '');
+}
