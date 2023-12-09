@@ -11,7 +11,8 @@ const CarouselCommentary = async ({ comment, model }) => {
             <div className="row row-cols-1 row-cols-1 g-2 mb-0">
                 <div className="col">
                     <div className="card h-100">
-                        <div className="card-header">
+                        {/* The `style` is for Safari maxHeight audio hack */}
+                        <div className="card-header" style={{ maxHeight: '41px' }}>
                             Commentary <audio controls src={`/foo/bar/${model}`} style={{ float: 'right', maxHeight: '24px', overflow: 'hidden', width: '150px' }} />
                         </div>
                         <div className="card-body p-0 m-0 text-center" style={cardBodyStyle}>
