@@ -24,7 +24,7 @@ const CarouselCommentary = ({ comments, model }) => {
                     <div className="card h-100">
                         {/* The `style` is for Safari maxHeight audio hack */}
                         <div className="card-header" style={{ maxHeight: '41px' }}>
-                            Commentary <audio controls src={`/foo/bar/${model}`} style={{ float: 'right', maxHeight: '24px', overflow: 'hidden', width: '150px' }} />
+                            Commentary <audio controls src={comments.audio} style={{ float: 'right', maxHeight: '24px', overflow: 'hidden', width: '150px' }} />
                         </div>
                         <div className="card-body " style={cardBodyStyle}>
                             <cite title="Our AI says"> {comments.comment.slice(0, 100)}...</cite>

@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 import OpenAI from 'openai';
 import { Redis } from '@upstash/redis';
+import { put } from '@vercel/blob';
 
 const openai = new OpenAI();
 
@@ -10,8 +11,10 @@ const redis = new Redis({
 });
 
 async function doAllTheShit() {
-    await doAllTheCommentShit();
-    // await doAllTheSpeechShit();
+    const { comment, date } = await doAllTheCommentShit();
+    const { filename, url } = await doAllTheSpeechShit({ comment, date });
+
+    return { comment, date, filename, url };
 }
 
 async function doAllTheCommentShit() {
@@ -52,6 +55,32 @@ ${articleTitles}
     await redis.set(commentKey, comment);
 
     return { comment, date };
+}
+
+async function doAllTheSpeechShit({ comment, date }) {
+    console.log('Creating speech...');
+    // Create speech of the comment.
+    const speechCompletion = await openai.audio.speech.create({
+        input: comment,
+        model: 'tts-1-1106',
+        voice: 'alloy',
+    });
+    console.log('Created speech', speechCompletion);
+    // Filename is timestamp+model
+    const filename = `${date.toISOString()}.mp3`;
+
+    // Save the file to @vercel/blob.
+    const file = await speechCompletion.arrayBuffer();
+    console.log('Saving file...');
+    const { url } = await put(filename, file, { access: 'public' });
+
+    console.log('Saved file!', url);
+
+    // Save the mp3 url to redis.
+    const audioKey = 'ai-comment-audio-openai';
+    await redis.set(audioKey, url);
+    // Make API route to get that file.
+    return { filename, url };
 }
 
 export async function POST(req) {
