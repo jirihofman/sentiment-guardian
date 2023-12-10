@@ -50,5 +50,5 @@ export function getSentiment(sentiment) {
         }
     }
 
-    return result + ' ' + (sentiment || '');
+    return result + ' ' + sentiment;
 }
