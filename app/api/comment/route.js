@@ -19,31 +19,28 @@ async function doAllTheCommentShit() {
     const articles = await redis.zrange('article:guardian', 0, -1, { count: 10, offset: 0, rev: true, withScores: false });
     const articleTitles = articles.map((article) => article.title).join('\n');
     const prompt = `
-Shortly (about 100 words) summarize following article headlines. Try to identify a major issue and its area or location. Show only the comment. Don't comment on each article separatelly.
+Summarize article headlines. Try to identify a major issue and its area or location. Show only the comment that should be 1 to 5 sentences long. Don't comment on each article separatelly.
 
-Article headlines:
+Articles:
 ${articleTitles}
 `;
 
     const chatCompletion = await openai.chat.completions.create({
-        max_tokens: 200,
+        frequency_penalty: 0,
+        max_tokens: 96,
         messages: [
             { content: 'Newspaper headlines commentator with a quick wit and prone to sarcasm.', role: 'system' },
+            // { content: 'Newspaper headlines commentator with a nihilistic view.', role: 'system' },
             { content: prompt, role: 'user' }
         ],
-        model: 'gpt-4-1106-preview',
+        model: 'gpt-3.5-turbo-1106', // cca 10x cheaper than gpt-4-1106-preview, not much a difference in the produced text
+        presence_penalty: 0,
+        temperature: 1,
+        top_p: 1,
         user: 'The sentiment of The Guardian',
     });
-    console.log('comment text', chatCompletion.choices[0].message);
-    let comment = chatCompletion.choices[0].message.content;
-    // Split comment into separate lines
-    if (comment.includes('\n')) {
-        comment = comment.split('\n');
-        // Remove last line
-        comment.pop();
-        // Join lines back
-        comment = comment.join('\n');
-    }
+
+    const comment = chatCompletion.choices[0].message.content;
 
     // Save time when created as ai-comment-date-openai
     const date = new Date();
