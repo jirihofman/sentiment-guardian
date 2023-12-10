@@ -1,7 +1,7 @@
-import React from 'react'; // Add missing import
+import React from 'react';
 import Link from 'next/link';
 import range from 'lodash/range';
-import { getArticlesKvGuardian, getCategoriesSummaryKvGuardian } from '../../lib/data';
+import { getArticlesKvGuardian, getCategoriesSummaryKvGuardian, getCommentsKvGuardian } from '../../lib/data';
 import { getSentiment } from '../../util/util';
 import { Carousel } from 'react-bootstrap';
 import CarouselSummary from '../carousel/carousel-item-summary';
@@ -15,31 +15,31 @@ const carouselItemStyle = {
     overflow: 'hidden',
 };
 
-const FrontPageCarousel = ({ articles, summary }) => (
+const FrontPageCarousel = ({ articles, comments, summary }) => (
 
     <Carousel controls={true} indicators={false} variant='dark' style={{ boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)' }} interval={null} className='mb-2'>
         <div className="carousel-item" style={carouselItemStyle}>
             <CarouselSummary articles={articles} summary={summary} />
-            <div className="carousel-caption"></div>
         </div>
         <div className="carousel-item" style={carouselItemStyle}>
-            <CarouselCommentary comment={'AI generated comment on today\'s events in text and speech. Comming soon ...'} model={'bar'} />
-            <div className="carousel-caption"></div>
+            <CarouselCommentary comments={comments} model={'gpt-4-1106-preview'} />
         </div>
     </Carousel>
 );
 
 FrontPageCarousel.propTypes = {
     articles: PropTypes.array.isRequired,
+    comments: PropTypes.object.isRequired,
     summary: PropTypes.object.isRequired,
 };
 
 const ArticleTable = async () => {
 
     // eslint-disable-next-line no-undef
-    const [ articles, summary ] = await Promise.all([
+    const [ articles, summary, comments ] = await Promise.all([
         getArticlesKvGuardian(),
         getCategoriesSummaryKvGuardian(),
+        getCommentsKvGuardian(),
     ]);
     // eslint-disable-next-line no-console
     console.log('Loaded %d cached articles', articles.length);
@@ -48,7 +48,7 @@ const ArticleTable = async () => {
 
     return (
         <div className='container px-4 py-0 my-3'>
-            <FrontPageCarousel articles={articles} summary={summary} />
+            <FrontPageCarousel articles={articles} summary={summary} comments={comments} />
             <h2 className="pb-2 border-bottom">{header}</h2>
             <table className="table">
                 <TableHeader />

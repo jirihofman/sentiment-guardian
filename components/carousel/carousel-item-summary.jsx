@@ -10,8 +10,8 @@ const CarouselSummary = async ({ articles, summary }) => {
     const averageSentimentEmoji = getSentiment(averageSentiment);
 
     const cardBodyStyle = {
-        maxHeight: '70px',
-        minHeight: '70px',
+        maxHeight: '120px',
+        minHeight: '120px',
         overflow: 'hidden',
     };
 
