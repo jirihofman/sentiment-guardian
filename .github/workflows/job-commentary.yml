@@ -1,0 +1,19 @@
+name: Commentary CI
+# Runs twice a day: 08:00 and 16:00 UTC
+on:
+  schedule:
+    - cron: '0 8,16 * * *'
+  workflow_dispatch:
+
+env:
+  ADMIN_API_KEY: ${{ secrets.ADMIN_API_KEY }}
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 1
+    steps:
+    - run: curl -XPOST https://sentiment-guardian.vercel.app/api/comment -d '{"adminApiKey":"${{ secrets.ADMIN_API_KEY }}"}'
+    - run: echo "Done!"
+    # TODO: revalidate only commentary cache
+    # - run: curl -XPOST https://sentiment-guardian.vercel.app/api/revalidate
+    # - run: echo "Cache revalidated!"

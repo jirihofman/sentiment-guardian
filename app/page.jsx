@@ -8,7 +8,6 @@ export default function Home() {
 
     return (
         <div>
-            {/* <Hero /> */}
             <Suspense fallback={<ArticleTableSkeleton />}>
                 <ArticleTable />
             </Suspense>
