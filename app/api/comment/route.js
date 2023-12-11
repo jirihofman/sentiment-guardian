@@ -10,13 +10,6 @@ const redis = new Redis({
     url: process.env.UPSTASH_REDIS_REST_URL,
 });
 
-async function doAllTheShit() {
-    const { comment, date } = await doAllTheCommentShit();
-    const { filename, url } = await doAllTheSpeechShit({ comment, date });
-
-    return { comment, date, filename, url };
-}
-
 async function doAllTheCommentShit() {
 
     const articles = await redis.zrange('article:guardian', 0, -1, { count: 10, offset: 0, rev: true, withScores: false });
@@ -57,8 +50,18 @@ ${articleTitles}
     return { comment, date };
 }
 
-async function doAllTheSpeechShit({ comment, date }) {
+async function doAllTheSpeechShit() {
+
     console.log('Creating speech...');
+    // Get the comment from redis.
+    const commentKey = 'ai-comment-text-openai';
+    const comment = await redis.get(commentKey);
+    console.log('Got comment', comment);
+    // Get the date from redis.
+    const dateKey = 'ai-comment-date-openai';
+    const dateString = await redis.get(dateKey);
+    const date = new Date(dateString);
+    console.log('Got date', date);
     // Create speech of the comment.
     const speechCompletion = await openai.audio.speech.create({
         input: comment,
@@ -86,10 +89,17 @@ async function doAllTheSpeechShit({ comment, date }) {
 export async function POST(req) {
 
     // read adminApiKey from request body.
-    const { adminApiKey } = await req.json();
+    const { adminApiKey, mode } = await req.json();
     if (adminApiKey === process.env.ADMIN_API_KEY) {
-        const commentAdded = await doAllTheShit();
-        return new Response(JSON.stringify(commentAdded, null, 4));
+        if (mode === 'comment') {
+            const commentAdded = await doAllTheCommentShit();
+            return new Response(JSON.stringify(commentAdded, null, 4));
+        } else if (mode === 'speech') {
+            const commentAdded = await doAllTheSpeechShit();
+            return new Response(JSON.stringify(commentAdded, null, 4));
+        } else {
+            return new Response('Unknown mode', { status: 400 });
+        }
     } else {
         return new Response('Unauthorized to perform this action', { status: 403 });
     }
