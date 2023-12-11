@@ -11,6 +11,7 @@ export async function POST() {
     console.log('Revalidated article:guardian:hits');
     revalidateTag('category:guardian');
     console.log('Revalidated category:guardian');
+    revalidateTag('ai-comment-text-openai');
 
     // return NextResponse.json({ now: Date.now(), revalidated: true });
     return new Response(JSON.stringify({ now: Date.now(), revalidated: true }));
