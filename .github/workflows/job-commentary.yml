@@ -12,8 +12,12 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 1
     steps:
-    - run: curl -XPOST https://sentiment-guardian.vercel.app/api/comment -d '{"adminApiKey":"${{ secrets.ADMIN_API_KEY }}"}'
-    - run: echo "Done!"
+    # First create and save text.
+    - run: curl -XPOST https://sentiment-guardian.vercel.app/api/comment -d '{"adminApiKey":"${{ secrets.ADMIN_API_KEY }}, "mode":"comment"}'
+    - run: echo "Done text!"
+    # Then create and save speech.
+    - run: curl -XPOST https://sentiment-guardian.vercel.app/api/comment -d '{"adminApiKey":"${{ secrets.ADMIN_API_KEY }}, "mode":"speech"}'
+    - run: echo "Done speech!"
     # TODO: revalidate only commentary cache
     # - run: curl -XPOST https://sentiment-guardian.vercel.app/api/revalidate
     # - run: echo "Cache revalidated!"
