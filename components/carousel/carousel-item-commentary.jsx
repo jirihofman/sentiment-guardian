@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { Button, Modal } from 'react-bootstrap'; 
+import { ChatDotsFill } from 'react-bootstrap-icons';
 import PropTypes from 'prop-types';
 
 const CarouselCommentary = ({ comments, model }) => {
@@ -24,14 +25,27 @@ const CarouselCommentary = ({ comments, model }) => {
                     <div className="card h-100">
                         {/* The `style` is for Safari maxHeight audio hack */}
                         <div className="card-header" style={{ maxHeight: '41px' }}>
-                            Commentary <audio controls src={comments.audio} style={{ float: 'right', maxHeight: '24px', overflow: 'hidden', width: '150px' }} />
+                            <span className="d-none d-lg-block">
+                                Commentary
+                                <Button variant="secondary" title='Click to see the full comment.' onClick={handleShow} size='sm' style={{ marginLeft: '105px', marginRight:'5px', marginTop: '-16px' }}>
+                                    <ChatDotsFill style={{ marginBottom: '5px' }} />
+                                </Button>
+                                <audio controls src={comments.audio} style={{ maxHeight: '24px', overflow: 'hidden', width: '180px' }} />
+                            </span>
+                            <span className="d-lg-none">
+                                Commentary
+                                <Button variant="secondary" title='Click to see the full comment.' onClick={handleShow} size='sm' style={{ marginLeft: '5px', marginRight: '5px', marginTop: '-16px' }}>
+                                    <ChatDotsFill style={{ marginBottom: '5px' }} />
+                                </Button>
+                                <audio controls src={comments.audio} style={{ maxHeight: '24px', overflow: 'hidden', width: '100px' }} />
+                            </span>
                         </div>
                         <div className="card-body " style={cardBodyStyle}>
-                            <cite title="Our AI says"> {comments.comment.slice(0, 100)}...</cite>
-
-                            <Button variant="primary" onClick={handleShow} size='sm'>
-                                See full comment
-                            </Button>
+                            {/* Display full comment on large screens */}
+                            <cite title="Our AI says">
+                                <div className="d-none d-lg-block px-5 mx-5">{comments.comment}</div>
+                                <div className="d-lg-none px-3">{comments.comment.slice(0, 80)}...</div>
+                            </cite>
 
                             <Modal show={show} onHide={handleClose}>
                                 <Modal.Header closeButton>
