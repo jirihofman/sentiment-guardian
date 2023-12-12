@@ -143,7 +143,7 @@ async function FrontPageCarouselSkeleton() {
     };
 
     return (
-        <Carousel style={{ boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)', height: '113px' }} interval={null} className='mb-2'>
+        <Carousel style={{ boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)', height: '159px' }} interval={null} className='mb-2'>
             <div className="carousel-item" key={1} style={{ ...carouselItemStyle, ...skeletonStyles }}>
                 <div className="spinner-border spinner-border-sm text-primary" role="status">
                     <span className="sr-only" />

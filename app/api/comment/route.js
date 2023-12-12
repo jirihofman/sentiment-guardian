@@ -2,6 +2,7 @@
 import OpenAI from 'openai';
 import { Redis } from '@upstash/redis';
 import { put } from '@vercel/blob';
+import { revalidateTag } from 'next/cache';
 
 const openai = new OpenAI();
 
@@ -10,12 +11,16 @@ const redis = new Redis({
     url: process.env.UPSTASH_REDIS_REST_URL,
 });
 
+const commentKey = 'ai-comment-text-openai';
+const audioKey = 'ai-comment-audio-openai';
+const dateKey = 'ai-comment-date-openai';
+
 async function doAllTheCommentShit() {
 
     const articles = await redis.zrange('article:guardian', 0, -1, { count: 10, offset: 0, rev: true, withScores: false });
     const articleTitles = articles.map((article) => article.title).join('\n');
     const prompt = `
-Summarize article headlines. Try to identify a major issue and its area or location. Show only the comment that should be 1 to 5 sentences long. Don't comment on each article separatelly.
+Summarize article headlines. Try to identify a major issue or mood, and its area or location. Show only the comment that should be 1 to 5 sentences long. Don't comment on each article separatelly.
 
 Articles:
 ${articleTitles}
@@ -40,11 +45,9 @@ ${articleTitles}
 
     // Save time when created as ai-comment-date-openai
     const date = new Date();
-    const dateKey = 'ai-comment-date-openai';
     await redis.set(dateKey, date.toISOString());
 
     // Save comment as ai-comment-text-openai
-    const commentKey = 'ai-comment-text-openai';
     await redis.set(commentKey, comment);
 
     return { comment, date };
@@ -54,7 +57,6 @@ async function doAllTheSpeechShit() {
 
     console.log('Creating speech...');
     // Get the comment from redis.
-    const commentKey = 'ai-comment-text-openai';
     const comment = await redis.get(commentKey);
     console.log('Got comment', comment);
     // Get the date from redis.
@@ -80,9 +82,16 @@ async function doAllTheSpeechShit() {
     console.log('Saved file!', url);
 
     // Save the mp3 url to redis.
-    const audioKey = 'ai-comment-audio-openai';
     await redis.set(audioKey, url);
-    // Make API route to get that file.
+
+    // Revoke next.js cache
+    revalidateTag('ai-comment-text-openai');
+    console.log('Revalidated ai-comment-text-openai');
+    revalidateTag('ai-comment-date-openai');
+    console.log('Revalidated ai-comment-date-openai');
+    revalidateTag('ai-comment-audio-openai');
+    console.log('Revalidated ai-comment-audio-openai');
+
     return { filename, url };
 }
 
