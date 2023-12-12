@@ -20,7 +20,10 @@ async function doAllTheCommentShit() {
     const articles = await redis.zrange('article:guardian', 0, -1, { count: 10, offset: 0, rev: true, withScores: false });
     const articleTitles = articles.map((article) => article.title).join('\n');
     const prompt = `
-Summarize article headlines. Try to identify a major issue or mood, and its area or location. Show only the comment that should be 1 to 5 sentences long. Don't comment on each article separatelly.
+Summarize headlines. Try to identify a major issue and its area or location. Show only the comment. Don't comment on each article separately.
+
+Example:
+War in the Middle East, political scandal in both Americas. What about Asia?
 
 Articles:
 ${articleTitles}
