@@ -13,7 +13,11 @@ export default function Faq() {
         },
         {
             answer: <code>Determine sentiment of the following headline as a number from range 1-100. 100 is the most positive. Return only the number. Title: ARTICLE_TITLE</code>,
-            question: 'What prompt does it use?',
+            question: 'What prompt does it use to get the sentiment?',
+        },
+        {
+            answer: 'The commentary is updated twice a day - at 8am and 8pm UTC.',
+            question: 'How often is the commentary updated?',
         },
         {
             answer: 'To track many more outlets, and to provide more detailed analysis.',
