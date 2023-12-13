@@ -1,14 +1,21 @@
 import pjson from '../../package.json';
+import { MODEL_GPT_SENTIMENT, MODEL_GPT_COMMENTS } from '../../lib/const';
 import PropTypes from 'prop-types';
 
 export default function Faq() {
 
+    const articlesCheckedEveryXMinutes = 20;
+
     const data = [
         {
-            answer: [
-                pjson.description,
-                'It periodically loads headlines from The Guardian and evaluates their sentiment using OpenAI\'s gpt-4-1106-preview model.',
-            ].join(' '),
+            answer: <>
+                {pjson.description}
+                <span>
+                    {`It periodically (every ${articlesCheckedEveryXMinutes} minutes) loads headlines from The Guardian and evaluates their sentiment using OpenAI's `}
+                    <code>{MODEL_GPT_SENTIMENT} </code>
+                    <a href='https://platform.openai.com/docs/models' rel='noreferrer' target='_blank'>model</a>.
+                </span>
+            </>,
             question: `What is ${pjson.displayName}?`,
         },
         {
@@ -16,8 +23,11 @@ export default function Faq() {
             question: 'What prompt does it use to get the sentiment?',
         },
         {
-            answer: 'The commentary is updated twice a day - at 8am and 8pm UTC.',
-            question: 'How often is the commentary updated?',
+            answer: <span>
+                {'The commentary is updated twice a day - at 8am and 8pm UTC and the following model is used: '}
+                <code>{MODEL_GPT_COMMENTS}</code>.
+            </span>,
+            question: 'How often is the commentary updated? And what model is used?',
         },
         {
             answer: 'To track many more outlets, and to provide more detailed analysis.',

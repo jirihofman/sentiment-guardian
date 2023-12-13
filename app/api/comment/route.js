@@ -3,6 +3,7 @@ import OpenAI from 'openai';
 import { Redis } from '@upstash/redis';
 import { put } from '@vercel/blob';
 import { revalidateTag } from 'next/cache';
+import { MODEL_GPT_COMMENTS } from '../../../lib/const';
 
 const openai = new OpenAI();
 
@@ -37,7 +38,7 @@ ${articleTitles}
             // { content: 'Newspaper headlines commentator with a nihilistic view.', role: 'system' },
             { content: prompt, role: 'user' }
         ],
-        model: 'gpt-3.5-turbo-1106', // cca 10x cheaper than gpt-4-1106-preview, not much a difference in the produced text
+        model: MODEL_GPT_COMMENTS,
         presence_penalty: 0,
         temperature: 1.43,
         top_p: 1,

@@ -6,6 +6,7 @@ import { getSentiment } from '../../util/util';
 import { Carousel } from 'react-bootstrap';
 import CarouselSummary from '../carousel/carousel-item-summary';
 import CarouselCommentary from '../carousel/carousel-item-commentary';
+import { MODEL_GPT_SENTIMENT } from '../../lib/const';
 import PropTypes from 'prop-types';
 
 const header = 'Latest Guardian headlines';
@@ -22,7 +23,7 @@ const FrontPageCarousel = ({ articles, comments, summary }) => (
             <CarouselSummary articles={articles} summary={summary} />
         </div>
         <div className="carousel-item" style={carouselItemStyle}>
-            <CarouselCommentary comments={comments} model={'gpt-4-1106-preview'} />
+            <CarouselCommentary comments={comments} model={MODEL_GPT_SENTIMENT} />
         </div>
     </Carousel>
 );

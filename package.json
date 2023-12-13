@@ -4,7 +4,7 @@
     "name": "Jiří Hofman",
     "email": "jiri.hofman@gmail.com"
   },
-  "description": "Tracker of the sentiment of the Guardian latest headlines. It uses OpenAI's GPT-4 model (gpt-4-1106-preview).",
+  "description": "Tracker of the sentiment of the Guardian latest headlines that also provides a commentary. Powered by OpenAI's GPT models.",
   "displayName": "The Sentiment of The Guardian",
   "version": "0.7.0",
   "private": false,

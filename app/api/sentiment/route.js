@@ -2,6 +2,7 @@
 import OpenAI from 'openai';
 import { Redis } from '@upstash/redis';
 import { getSentimentCategoryByNumber } from '../../../util/util';
+import { MODEL_GPT_SENTIMENT } from '../../../lib/const';
 
 const openai = new OpenAI();
 
@@ -29,7 +30,7 @@ async function doAllTheShit() {
         //  Article text is: ${article.description}
         const chatCompletion = await openai.chat.completions.create({
             messages: [{ content: message, role: 'user' }],
-            model: 'gpt-4-1106-preview',
+            model: MODEL_GPT_SENTIMENT,
             user: 'The sentiment of The Guardian'
         });
         console.log('chatCompletion for article', article.title, chatCompletion.choices);
