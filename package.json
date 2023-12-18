@@ -36,7 +36,7 @@
   "dependencies": {
     "@upstash/redis": "^1.25.2",
     "@vercel/analytics": "^1.1.1",
-    "@vercel/blob": "^0.16.0",
+    "@vercel/blob": "^0.16.1",
     "bootstrap": "^5.2.1",
     "lodash": "^4.17.21",
     "next": "^14.0.4",
