@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 import OpenAI from 'openai';
 import { Redis } from '@upstash/redis';
-import { put } from '@vercel/blob';
+import { createClient } from '@supabase/supabase-js';
 import { revalidateTag } from 'next/cache';
 import { MODEL_GPT_COMMENTS } from '../../../lib/const';
 
@@ -15,6 +15,19 @@ const redis = new Redis({
 const commentKey = 'ai-comment-text-openai';
 const audioKey = 'ai-comment-audio-openai';
 const dateKey = 'ai-comment-date-openai';
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+const supabase = createClient(supabaseUrl, supabaseKey);
+
+// Upload file using standard upload
+async function uploadFile({ file, filename }) {
+    const { data, error } = await supabase.storage.from('sentiment-guardian').upload(filename, file, {
+        contentType: 'audio/mpeg',
+        upsert: true,
+    });
+
+    return { data, error };
+}
 
 async function doAllTheCommentShit() {
 
@@ -81,9 +94,10 @@ async function doAllTheSpeechShit() {
     // Save the file to @vercel/blob.
     const file = await speechCompletion.arrayBuffer();
     console.log('Saving file...');
-    const { url } = await put(filename, file, { access: 'public' });
-
-    console.log('Saved file!', url);
+    const { data, error } = await uploadFile({ file, filename });
+    console.log('Saved file!', data, error);
+    const url = `${supabaseUrl}/storage/v1/object/public/${data.fullPath}`;
+    console.log('File url', url);
 
     // Save the mp3 url to redis.
     await redis.set(audioKey, url);
