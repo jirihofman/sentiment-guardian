@@ -51,7 +51,7 @@
   "devDependencies": {
     "@commitlint/cli": "^18.4.3",
     "@commitlint/config-conventional": "^18.4.3",
-    "@cypress/code-coverage": "^3.12.15",
+    "@cypress/code-coverage": "^3.12.16",
     "@types/react": "18.2.45",
     "cypress": "^13.6.2",
     "encoding": "^0.1.13",
