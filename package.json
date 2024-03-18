@@ -36,7 +36,7 @@
   "dependencies": {
     "@supabase/supabase-js": "^2.39.7",
     "@upstash/redis": "^1.28.4",
-    "@vercel/analytics": "^1.1.2",
+    "@vercel/analytics": "^1.2.2",
     "bootstrap": "^5.3.3",
     "lodash": "^4.17.21",
     "next": "^14.1.3",
