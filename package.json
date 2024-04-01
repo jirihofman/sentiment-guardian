@@ -52,7 +52,7 @@
     "@commitlint/cli": "^19.2.1",
     "@commitlint/config-conventional": "^19.1.0",
     "@cypress/code-coverage": "^3.12.33",
-    "@types/react": "18.2.70",
+    "@types/react": "18.2.73",
     "cypress": "^13.7.1",
     "encoding": "^0.1.13",
     "eslint": "8.57.0",
