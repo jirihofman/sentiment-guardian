@@ -41,7 +41,7 @@
     "lodash": "^4.17.21",
     "next": "^14.2.2",
     "node-html-parser": "^6.1.13",
-    "openai": "^4.31.0",
+    "openai": "^4.47.1",
     "react": "^18.3.1",
     "react-bootstrap": "^2.10.2",
     "react-bootstrap-icons": "^1.11.4",
