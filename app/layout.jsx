@@ -2,6 +2,7 @@ import Script from 'next/script';
 import { Analytics } from '@vercel/analytics/react';
 import Main from '../components/layout/main';
 import pjson from '../package.json';
+import PropTypes from 'prop-types';
 /* ensure all pages have Bootstrap CSS */
 import '../style/index.css';
 
@@ -38,4 +39,8 @@ export const metadata = {
         index: true,
     },
     title: pjson.displayName,
+};
+
+LocaleLayout.propTypes = {
+    children: PropTypes.node.isRequired,
 };

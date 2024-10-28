@@ -1,5 +1,6 @@
 import { getSentiment } from '../../util/util';
 import { toInteger } from 'lodash';
+import PropTypes from 'prop-types';
 
 const CarouselSummary = async ({ articles, summary }) => {
 
@@ -41,6 +42,11 @@ const CarouselSummary = async ({ articles, summary }) => {
     );
 };
 
+CarouselSummary.propTypes = {
+    articles: PropTypes.array.isRequired,
+    summary: PropTypes.object.isRequired,
+};
+
 export default CarouselSummary;
 
 /** Shows five emojis with variable font-size based on their ratio. */
@@ -66,3 +72,7 @@ async function SummaryCategories({ summary }) {
         </div>
     );
 }
+
+SummaryCategories.propTypes = {
+    summary: PropTypes.object.isRequired,
+};
