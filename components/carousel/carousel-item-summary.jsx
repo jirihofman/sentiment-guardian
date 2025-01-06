@@ -49,22 +49,20 @@ async function SummaryCategories({ summary }) {
     const maxCount = Math.max((summary).map(category => category.count).reduce((a, b) => a + b, 0));
 
     return (
-        <div style={{ marginLeft: '' }} className='container'>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                <div className="space-y-0">
-                    {summary.map((category, index) => {
-                        return <div key={index} className="flex items-center w-32 sm:w-64">
-                            <span className="w-6 mr-2">{category.emoji}</span>
-                            <div className="flex-grow bg-gray-200 rounded-full h-4 overflow-hidden">
-                                <div className={`h-full ${category.color}`}
-                                    style={{ width: `${(category.count / maxCount) * 100}%` }}
-                                ></div>
-                            </div>
-                            <span className="ml-2 text-sm text-gray-600 w-10">{category.count}</span>
-                        </div>;
-                    }
-                    )}
-                </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+            <div className="space-y-0">
+                {summary.map((category, index) => {
+                    return <div key={index} className="flex items-center w-32 sm:w-64">
+                        <span className="w-6 mr-2">{category.emoji}</span>
+                        <div className="flex-grow bg-gray-200 rounded-full h-4 overflow-hidden">
+                            <div className={`h-full ${category.color}`}
+                                style={{ width: `${(category.count / maxCount) * 100}%` }}
+                            ></div>
+                        </div>
+                        <span className="ml-2 text-sm text-gray-600 w-10">{category.count}</span>
+                    </div>;
+                }
+                )}
             </div>
         </div>
     );
