@@ -46,23 +46,26 @@ export default CarouselSummary;
 /** Shows five emojis with variable font-size based on their ratio. */
 async function SummaryCategories({ summary }) {
 
-    const total = Object.keys(summary).reduce((a, b) => a + summary[b], 0);
+    const maxCount = Math.max((summary).map(category => category.count).reduce((a, b) => a + b, 0));
 
     return (
-        <div style={{ marginLeft: '-5px' }}>
-            {
-                Object.keys(summary).filter(key => key !== 'total').map((key, index) => {
-
-                    const value = summary[key] || 0;
-                    if (!value) {
-                        return null;
+        <div style={{ marginLeft: '' }} className='container'>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                <div className="space-y-0">
+                    {summary.map((category, index) => {
+                        return <div key={index} className="flex items-center w-32 sm:w-64">
+                            <span className="w-6 mr-2">{category.emoji}</span>
+                            <div className="flex-grow bg-gray-200 rounded-full h-4 overflow-hidden">
+                                <div className={`h-full ${category.color}`}
+                                    style={{ width: `${(category.count / maxCount) * 100}%` }}
+                                ></div>
+                            </div>
+                            <span className="ml-2 text-sm text-gray-600 w-10">{category.count}</span>
+                        </div>;
                     }
-                    const ratio = value / total;
-                    const fontSize = Math.max(1, ratio * 7).toFixed(2) + 'em';
-
-                    return <span key={index} style={{ fontSize, marginLeft: '-5px' }} title={value}>{key}</span >;
-                })
-            }
+                    )}
+                </div>
+            </div>
         </div>
     );
 }
