@@ -50,7 +50,7 @@
     "xml2js": "^0.6.2"
   },
   "devDependencies": {
-    "@commitlint/cli": "^19.5.0",
+    "@commitlint/cli": "^19.6.1",
     "@commitlint/config-conventional": "^19.6.0",
     "@cypress/code-coverage": "^3.13.8",
     "@types/react": "18.3.10",
