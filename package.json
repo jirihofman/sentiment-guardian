@@ -19,7 +19,6 @@
     "build": "next build",
     "start": "next start -p 5100",
     "lint": "next lint",
-    "prepare": "husky install",
     "test": "npm run test:coverage:jest && npm run test:e2e:component",
     "test:jest": "node --experimental-vm-modules node_modules/jest/bin/jest.js --watch",
     "test:build": "NODE_ENV=test next build",
