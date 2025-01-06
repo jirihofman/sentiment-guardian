@@ -19,7 +19,6 @@
     "build": "next build",
     "start": "next start -p 5100",
     "lint": "next lint",
-    "prepare": "husky install",
     "test": "npm run test:coverage:jest && npm run test:e2e:component",
     "test:jest": "node --experimental-vm-modules node_modules/jest/bin/jest.js --watch",
     "test:build": "NODE_ENV=test next build",
@@ -50,8 +49,6 @@
     "xml2js": "^0.6.2"
   },
   "devDependencies": {
-    "@commitlint/cli": "^19.5.0",
-    "@commitlint/config-conventional": "^19.6.0",
     "@cypress/code-coverage": "^3.13.8",
     "@types/react": "18.3.10",
     "cypress": "^13.17.0",
@@ -60,7 +57,6 @@
     "eslint-config-next": "^14.2.8",
     "eslint-plugin-cypress": "^3.6.0",
     "eslint-plugin-jest": "^28.9.0",
-    "husky": "^9.1.6",
     "jest": "latest"
   },
   "nyc": {
