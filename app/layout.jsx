@@ -1,5 +1,4 @@
 import Script from 'next/script';
-import { Analytics } from '@vercel/analytics/react';
 import Main from '../components/layout/main';
 import pjson from '../package.json';
 /* ensure all pages have Bootstrap CSS */
@@ -15,7 +14,6 @@ export default async function LocaleLayout({ children }) {
                 <Main>
                     <main>{children}</main>
                 </Main>
-                <Analytics />
             </body>
         </html>
     );
