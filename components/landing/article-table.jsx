@@ -42,6 +42,11 @@ const ArticleTable = async () => {
         getCategoriesSummaryKvGuardian(),
         getCommentsKvGuardian(),
     ]);
+    const summaryWithCounts = Object.keys(summary).map(cat => ({
+        color: getBgColorByEmoji(cat),
+        count: summary[cat],
+        emoji: cat,
+    }));
     // eslint-disable-next-line no-console
     console.log('Loaded %d cached articles', articles.length);
     // eslint-disable-next-line no-console
@@ -49,7 +54,7 @@ const ArticleTable = async () => {
 
     return (
         <div className='container px-4 py-0 my-3'>
-            <FrontPageCarousel articles={articles} summary={summary} comments={comments} />
+            <FrontPageCarousel articles={articles} summary={summaryWithCounts} comments={comments} />
             <h2 className="pb-2 border-bottom">{header}</h2>
             <table className="table">
                 <TableHeader />
@@ -152,4 +157,22 @@ async function FrontPageCarouselSkeleton() {
             </div>
         </Carousel>
     );
+}
+
+// Example
+function getBgColorByEmoji(emoji) {
+    switch (emoji) {
+        case '😭':
+            return 'bg-red-500';
+        case '😔':
+            return 'bg-orange-500';
+        case '😐':
+            return 'bg-yellow-500';
+        case '🙂':
+            return 'bg-lime-500';
+        case '😀':
+            return 'bg-green-500';
+        default:
+            return 'bg-gray-500';
+    }
 }

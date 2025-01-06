@@ -1,5 +1,6 @@
 /* ensure all pages have Bootstrap CSS */
 @import url('../node_modules/bootstrap/dist/css/bootstrap.min.css');
+@import "tailwindcss";
 .md-container {
 	max-width: 800px;
 	padding-top: 2rem;
