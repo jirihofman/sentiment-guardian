@@ -54,7 +54,7 @@
     "cypress": "^13.17.0",
     "encoding": "^0.1.13",
     "eslint": "8.57.1",
-    "eslint-config-next": "^14.2.8",
+    "eslint-config-next": "^15.1.6",
     "eslint-plugin-cypress": "^3.6.0",
     "eslint-plugin-jest": "^28.9.0",
     "jest": "latest"
