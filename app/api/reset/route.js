@@ -8,12 +8,17 @@ const redis = new Redis({
     url: process.env.UPSTASH_REDIS_REST_URL,
 });
 
-export async function GET(req) {
-    const { adminApiKey } = await req.json();
+import { timingSafeEqual } from 'crypto';
 
-    if (adminApiKey !== process.env.ADMIN_API_KEY) {
+export async function POST(req) {
+    const { adminApiKey } = await req.json();
+    const expectedKey = process.env.ADMIN_API_KEY;
+    
+    if (!adminApiKey || !expectedKey || 
+        !timingSafeEqual(Buffer.from(adminApiKey), Buffer.from(expectedKey))) {
         return new Response('Unauthorized', { status: 403 });
     }
+}
     // flushall
     await redis.flushall();
     // TODO: Reset vercel cache by tag.
