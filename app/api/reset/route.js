@@ -8,12 +8,15 @@ const redis = new Redis({
     url: process.env.UPSTASH_REDIS_REST_URL,
 });
 
-export async function GET() {
+export async function GET(req) {
+    const { adminApiKey } = await req.json();
 
+    if (adminApiKey !== process.env.ADMIN_API_KEY) {
+        return new Response('Unauthorized', { status: 403 });
+    }
     // flushall
     await redis.flushall();
     // TODO: Reset vercel cache by tag.
 
-    // Select latest 100 articles from Redis.
     return new Response('Redis flushed', { status: 200 });
 }

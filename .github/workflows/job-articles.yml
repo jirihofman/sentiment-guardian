@@ -16,5 +16,5 @@ jobs:
     - run: curl -XPOST https://sentiment-guardian.vercel.app/api/articles -d '{"adminApiKey":"${{ secrets.ADMIN_API_KEY }}"}'
     - run: curl -XPOST https://sentiment-guardian.vercel.app/api/sentiment -d '{"adminApiKey":"${{ secrets.ADMIN_API_KEY }}"}'
     - run: echo "Done!"
-    - run: curl -XPOST https://sentiment-guardian.vercel.app/api/revalidate
+    - run: curl -XPOST https://sentiment-guardian.vercel.app/api/revalidate -d '{"adminApiKey":"${{ secrets.ADMIN_API_KEY }}"}'
     - run: echo "Cache revalidated!"
