@@ -2,8 +2,12 @@
 // import { NextResponse } from 'next/server';
 import { revalidateTag } from 'next/cache';
 
-export async function POST() {
+export async function POST(req) {
+    const { adminApiKey } = await req.json();
 
+    if (adminApiKey !== process.env.ADMIN_API_KEY) {
+        return new Response('Unauthorized', { status: 403 });
+    }
     console.log('Revalidating Tags');
     revalidateTag('article:guardian');
     console.log('Revalidated article:guardian');
