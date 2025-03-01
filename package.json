@@ -33,7 +33,7 @@
     "test:e2e:component": "NODE_ENV=test cypress run --component --browser chrome"
   },
   "dependencies": {
-    "@supabase/supabase-js": "^2.47.10",
+    "@supabase/supabase-js": "^2.49.1",
     "@tailwindcss/postcss": "^4.0.9",
     "@upstash/redis": "^1.34.3",
     "bootstrap": "^5.3.3",
