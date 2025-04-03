@@ -41,7 +41,7 @@
     "next": "^15.2.4",
     "node-html-parser": "^6.1.13",
     "openai": "^4.76.0",
-    "react": "^19.0.0",
+    "react": "^19.1.0",
     "react-bootstrap": "^2.10.6",
     "react-bootstrap-icons": "^1.11.5",
     "react-dom": "^19.0.0",
@@ -50,7 +50,7 @@
   },
   "devDependencies": {
     "@cypress/code-coverage": "^3.13.8",
-    "@types/react": "18.3.10",
+    "@types/react": "19.1.0",
     "cypress": "^13.17.0",
     "encoding": "^0.1.13",
     "eslint": "8.57.1",
