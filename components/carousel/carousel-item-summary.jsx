@@ -1,5 +1,6 @@
 import { getSentiment } from '../../util/util';
 import { toInteger } from 'lodash';
+import PropTypes from 'prop-types';
 
 const CarouselSummary = async ({ articles, summary }) => {
 
@@ -67,3 +68,12 @@ async function SummaryCategories({ summary }) {
         </div>
     );
 }
+
+CarouselSummary.propTypes = {
+    articles: PropTypes.array.isRequired,
+    summary: PropTypes.array.isRequired,
+};
+
+SummaryCategories.propTypes = {
+    summary: PropTypes.array.isRequired,
+};

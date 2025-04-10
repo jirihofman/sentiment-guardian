@@ -3,6 +3,7 @@ import Main from '../components/layout/main';
 import pjson from '../package.json';
 /* ensure all pages have Bootstrap CSS */
 import '../style/index.css';
+import PropTypes from 'prop-types';
 
 export default async function LocaleLayout({ children }) {
     return (
@@ -36,4 +37,8 @@ export const metadata = {
         index: true,
     },
     title: pjson.displayName,
+};
+
+LocaleLayout.propTypes = {
+    children: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
 };
