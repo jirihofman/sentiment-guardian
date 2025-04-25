@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 7
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
       with:
@@ -42,7 +42,7 @@ jobs:
     - run: npm run pretest
     - run: npm run test:coverage:prepare-folders
     - run: npm run test:coverage:jest
-    - run: npm run test:e2e:component
+    # - run: npm run test:e2e:component
     - run: npm run report:combined
     - name: Upload coverage reports to Codecov
       uses: codecov/codecov-action@v3

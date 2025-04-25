@@ -1,5 +1,6 @@
 import { getSentiment } from '../../util/util';
 import { toInteger } from 'lodash';
+import PropTypes from 'prop-types';
 
 const CarouselSummary = async ({ articles, summary }) => {
 
@@ -41,6 +42,22 @@ const CarouselSummary = async ({ articles, summary }) => {
     );
 };
 
+CarouselSummary.propTypes = {
+    articles: PropTypes.arrayOf(
+        PropTypes.shape({
+            sentiment: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+            // ...other article properties if needed...
+        })
+    ).isRequired,
+    summary: PropTypes.arrayOf(
+        PropTypes.shape({
+            color: PropTypes.string.isRequired,
+            count: PropTypes.number.isRequired,
+            emoji: PropTypes.string.isRequired,
+        })
+    ).isRequired,
+};
+
 export default CarouselSummary;
 
 /** Shows five emojis with variable font-size based on their ratio. */
@@ -67,3 +84,13 @@ async function SummaryCategories({ summary }) {
         </div>
     );
 }
+
+SummaryCategories.propTypes = {
+    summary: PropTypes.arrayOf(
+        PropTypes.shape({
+            color: PropTypes.string.isRequired,
+            count: PropTypes.number.isRequired,
+            emoji: PropTypes.string.isRequired,
+        })
+    ).isRequired,
+};

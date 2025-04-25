@@ -31,7 +31,7 @@ async function doAllTheShit() {
         const chatCompletion = await openai.chat.completions.create({
             messages: [{ content: message, role: 'user' }],
             model: MODEL_GPT_SENTIMENT,
-            user: 'The sentiment of The Guardian'
+            user: 'The Sentiment of The Guardian'
         });
         console.log('chatCompletion for article', article.title, chatCompletion.choices);
         const sentiment = chatCompletion.choices[0].message.content;

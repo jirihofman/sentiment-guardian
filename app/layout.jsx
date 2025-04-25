@@ -1,6 +1,7 @@
 import Script from 'next/script';
 import Main from '../components/layout/main';
 import pjson from '../package.json';
+import PropTypes from 'prop-types';
 /* ensure all pages have Bootstrap CSS */
 import '../style/index.css';
 
@@ -36,4 +37,9 @@ export const metadata = {
         index: true,
     },
     title: pjson.displayName,
+};
+
+// Add prop types validation
+LocaleLayout.propTypes = {
+    children: PropTypes.node.isRequired,
 };
