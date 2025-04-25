@@ -10,10 +10,29 @@ Based on [jirihofman/nextjs-fullstack-app-template](https://github.com/jirihofma
 
 [![codecov](https://codecov.io/gh/jirihofman/sentiment-guardian/branch/master/graph/badge.svg)](https://codecov.io/gh/jirihofman/sentiment-guardian) ![CodeRabbit Pull Request Reviews](https://img.shields.io/coderabbit/prs/github/jirihofman/sentiment-guardian?utm_source=oss&utm_medium=github&utm_campaign=jirihofman%2Fsentiment-guardian&labelColor=171717&color=FF570A&link=https%3A%2F%2Fcoderabbit.ai&label=CodeRabbit+Reviews)
 
-# TODO
-- [ ] make a page visually similar to The Guardian headline section and add sentiment emojis to it? 
-
 # Dev notes, debug
+## Using MCP Upstash Server
+
+This project supports integration with the MCP Upstash server for managing and interacting with Upstash Redis.
+
+To enable this:
+
+1. Ensure you have the required credentials for your Upstash Redis instance:
+   - Upstash REST URL
+   - Upstash REST Token
+   - Upstash REST Email
+   - Upstash REST API Key
+
+2. The configuration for the MCP Upstash server is located in `.vscode/mcp.json`. When starting the server, you will be prompted for these credentials.
+
+3. The server is started using the `@upstash/mcp-server` package and connects to your Upstash Redis instance securely.
+
+This setup allows you to manage your Upstash Redis data directly from your development environment using MCP.
+
+### Example prompts
+- find lowest sentiment for a range 2024-01-01 - 2024-01-05
+- how many records is there in article:guardian
+
 ## @upstash/redis
 ```sh
 # Set initial categories for existing articles
