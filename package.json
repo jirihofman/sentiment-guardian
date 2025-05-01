@@ -44,7 +44,7 @@
     "react-bootstrap": "^2.10.6",
     "react-bootstrap-icons": "^1.11.5",
     "react-dom": "19.1.0",
-    "tailwindcss": "^4.0.0-beta.8",
+    "tailwindcss": "^4.1.5",
     "xml2js": "^0.6.2"
   },
   "devDependencies": {
