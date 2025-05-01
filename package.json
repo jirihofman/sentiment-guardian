@@ -52,7 +52,7 @@
     "encoding": "^0.1.13",
     "eslint": "8.57.1",
     "eslint-config-next": "15.3.0",
-    "eslint-plugin-jest": "^28.9.0",
+    "eslint-plugin-jest": "^28.11.0",
     "jest": "latest"
   },
   "nyc": {
