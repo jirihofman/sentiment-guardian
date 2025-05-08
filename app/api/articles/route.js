@@ -15,8 +15,8 @@ async function doAllTheShit() {
     const html = await fetch('https://www.theguardian.com/international', { next: { revalidate: 0 }}).then(res => res.text());
     // Parse the html and get the headlines from #container-headlines.
     const doc = parse(html);
-    const headlines = [...doc.querySelectorAll('#container-headlines .show-underline')].map(headline => headline.innerText);
-    const links = [...doc.querySelectorAll('#container-headlines a')].map(link => link.getAttribute('href'));
+    const headlines = [...doc.querySelectorAll('#container-news .show-underline')].map(headline => headline.innerText);
+    const links = [...doc.querySelectorAll('#container-news a')].map(link => link.getAttribute('href'));
     console.log('links', links);
     console.log('headlines', headlines);
 
