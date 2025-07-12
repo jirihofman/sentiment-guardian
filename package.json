@@ -33,7 +33,7 @@
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.49.9",
-    "@tailwindcss/postcss": "^4.1.5",
+    "@tailwindcss/postcss": "^4.1.11",
     "@upstash/redis": "^1.34.8",
     "bootstrap": "^5.3.5",
     "lodash": "^4.17.21",
