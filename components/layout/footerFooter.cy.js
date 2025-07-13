@@ -1,4 +1,3 @@
-/* eslint-disable cypress/no-async-tests */
 import Footer from './footer';
 
 describe('<Footer />', () => {

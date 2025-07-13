@@ -1,10 +1,10 @@
 // Mock data endpoint for testing pagination
 const mockArticles = Array.from({ length: 100 }, (_, i) => ({
-    id: i + 1,
-    title: `Guardian Article ${i + 1}`,
-    sentiment: ['NEG2', 'NEG1', 'NEU', 'POS1', 'POS2'][Math.floor(Math.random() * 5)],
     date: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000).toISOString(),
+    id: i + 1,
     link: `https://www.theguardian.com/mock-article-${i + 1}`,
+    sentiment: ['NEG2', 'NEG1', 'NEU', 'POS1', 'POS2'][Math.floor(Math.random() * 5)],
+    title: `Guardian Article ${i + 1}`,
 }));
 
 export async function GET(request) {
@@ -19,9 +19,9 @@ export async function GET(request) {
         articles,
         pagination: {
             currentPage: page,
-            totalPages: Math.ceil(mockArticles.length / limit),
+            itemsPerPage: limit,
             totalItems: mockArticles.length,
-            itemsPerPage: limit
+            totalPages: Math.ceil(mockArticles.length / limit),
         }
     });
 }

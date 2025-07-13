@@ -52,9 +52,9 @@ const Pagination = ({ currentPage, totalPages, baseUrl = '/' }) => {
 };
 
 Pagination.propTypes = {
+    baseUrl: PropTypes.string,
     currentPage: PropTypes.number.isRequired,
     totalPages: PropTypes.number.isRequired,
-    baseUrl: PropTypes.string,
 };
 
 export default Pagination;

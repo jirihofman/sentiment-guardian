@@ -1,6 +1,7 @@
 // import Hero from '../components/landing/hero';
 import ArticleTable, { ArticleTableSkeleton } from '../components/landing/article-table';
 import { Suspense } from 'react';
+import PropTypes from 'prop-types';
 
 export const dynamic = 'force-dynamic';
 
@@ -16,3 +17,7 @@ export default async function Home({ searchParams }) {
         </div>
     );
 }
+
+Home.propTypes = {
+    searchParams: PropTypes.object,
+};
