@@ -1,6 +1,5 @@
 // import Hero from '../components/landing/hero';
 import ArticleTable, { ArticleTableSkeleton } from '../components/landing/article-table';
-import SentimentChart from '../components/sentiment-chart';
 import { Suspense } from 'react';
 import PropTypes from 'prop-types';
 
@@ -12,9 +11,6 @@ export default async function Home({ searchParams }) {
 
     return (
         <div>
-            <div className="container px-4 py-0 my-3">
-                <SentimentChart />
-            </div>
             <Suspense fallback={<ArticleTableSkeleton />}>
                 <ArticleTable page={page} />
             </Suspense>

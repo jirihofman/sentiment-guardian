@@ -20,6 +20,7 @@ export default function Header() {
                     </Navbar.Brand>
                     <Navbar.Collapse id="navbarScroll" className="justify-content-end">
                         <Nav className='me-auto'>
+                            <Link passHref href="/sentiment-chart" legacyBehavior><Nav.Link>Sentiment Chart</Nav.Link></Link>
                             <Link passHref href="/faq" legacyBehavior><Nav.Link>FAQ</Nav.Link></Link>
                             <Nav.Link role='button' data-bs-toggle='modal' data-bs-target='#exampleModal'>About</Nav.Link>
                         </Nav>
