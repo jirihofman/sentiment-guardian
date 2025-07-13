@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pagination Test - The Sentiment of The Guardian</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1>Pagination Test</h1>
+        <div class="row">
+            <div class="col-md-8">
+                <h2>Latest Guardian headlines</h2>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col" class="col-1">Sentiment</th>
+                            <th scope="col" class="col-9">Title</th>
+                            <th scope="col" class="col-2 d-none d-md-table-cell">Published</th>
+                        </tr>
+                    </thead>
+                    <tbody id="articles-table">
+                        <!-- Articles will be loaded here -->
+                    </tbody>
+                </table>
+                
+                <!-- Pagination -->
+                <nav aria-label="Article pagination" class="d-flex justify-content-center">
+                    <ul class="pagination" id="pagination">
+                        <!-- Pagination will be loaded here -->
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const getSentimentEmoji = (sentiment) => {
+            switch(sentiment) {
+                case 'NEG2': return '😭';
+                case 'NEG1': return '😔';
+                case 'NEU': return '😐';
+                case 'POS1': return '🙂';
+                case 'POS2': return '😀';
+                default: return '😐';
+            }
+        };
+
+        const formatDate = (dateString) => {
+            return new Date(dateString).toLocaleString();
+        };
+
+        const loadArticles = async (page = 1) => {
+            try {
+                const response = await fetch(`/api/mock-articles?page=${page}&limit=20`);
+                const data = await response.json();
+                
+                const tableBody = document.getElementById('articles-table');
+                tableBody.innerHTML = '';
+                
+                data.articles.forEach(article => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>
+                            <span style="font-size: 1.5em">${getSentimentEmoji(article.sentiment)}</span>
+                        </td>
+                        <td>
+                            <div>${article.title}</div>
+                            <div class="d-inline d-sm-none">
+                                <span style="font-size: 0.8em">
+                                    <a href="${article.link}" target="_blank">${formatDate(article.date)}</a>
+                                </span>
+                            </div>
+                        </td>
+                        <td class="d-none d-md-table-cell">
+                            <span style="font-size: 0.8em">
+                                <a href="${article.link}" target="_blank">${formatDate(article.date)}</a>
+                            </span>
+                        </td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+                
+                generatePagination(data.pagination);
+            } catch (error) {
+                console.error('Error loading articles:', error);
+            }
+        };
+
+        const generatePagination = (pagination) => {
+            const paginationContainer = document.getElementById('pagination');
+            paginationContainer.innerHTML = '';
+            
+            // Previous button
+            const prevLi = document.createElement('li');
+            prevLi.className = `page-item ${pagination.currentPage === 1 ? 'disabled' : ''}`;
+            prevLi.innerHTML = `
+                <a class="page-link" href="#" onclick="loadArticles(${pagination.currentPage - 1})" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            `;
+            paginationContainer.appendChild(prevLi);
+            
+            // Page numbers
+            for (let i = 1; i <= pagination.totalPages; i++) {
+                const li = document.createElement('li');
+                li.className = `page-item ${pagination.currentPage === i ? 'active' : ''}`;
+                li.innerHTML = `
+                    <a class="page-link" href="#" onclick="loadArticles(${i})" ${pagination.currentPage === i ? 'aria-current="page"' : ''}>
+                        ${i}
+                    </a>
+                `;
+                paginationContainer.appendChild(li);
+            }
+            
+            // Next button
+            const nextLi = document.createElement('li');
+            nextLi.className = `page-item ${pagination.currentPage === pagination.totalPages ? 'disabled' : ''}`;
+            nextLi.innerHTML = `
+                <a class="page-link" href="#" onclick="loadArticles(${pagination.currentPage + 1})" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            `;
+            paginationContainer.appendChild(nextLi);
+        };
+
+        // Load first page on page load
+        loadArticles(1);
+    </script>
+</body>
+</html>
