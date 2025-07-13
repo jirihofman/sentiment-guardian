@@ -4,12 +4,14 @@ import { Suspense } from 'react';
 
 export const dynamic = 'force-dynamic';
 
-export default function Home() {
+export default async function Home({ searchParams }) {
+    const resolvedSearchParams = await searchParams;
+    const page = parseInt(resolvedSearchParams?.page) || 1;
 
     return (
         <div>
             <Suspense fallback={<ArticleTableSkeleton />}>
-                <ArticleTable />
+                <ArticleTable page={page} />
             </Suspense>
         </div>
     );

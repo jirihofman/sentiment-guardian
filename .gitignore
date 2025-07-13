@@ -48,3 +48,4 @@ yarn-error.log*
 /.stash
 
 README-*.md
+.env.local

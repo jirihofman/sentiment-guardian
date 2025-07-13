@@ -7,6 +7,7 @@ import { Carousel } from 'react-bootstrap';
 import CarouselSummary from '../carousel/carousel-item-summary';
 import CarouselCommentary from '../carousel/carousel-item-commentary';
 import { MODEL_GPT_SENTIMENT } from '../../lib/const';
+import Pagination from '../pagination';
 import PropTypes from 'prop-types';
 
 const header = 'Latest Guardian headlines';
@@ -34,11 +35,16 @@ FrontPageCarousel.propTypes = {
     summary: PropTypes.object.isRequired,
 };
 
-const ArticleTable = async () => {
+const ArticleTable = async ({ page = 1 }) => {
+    const ITEMS_PER_PAGE = 20;
+    const TOTAL_PAGES = 5;
+    
+    // Calculate offset for pagination
+    const offset = (page - 1) * ITEMS_PER_PAGE;
 
     // eslint-disable-next-line no-undef
     const [ articles, summary, comments ] = await Promise.all([
-        getArticlesKvGuardian(),
+        getArticlesKvGuardian(offset, ITEMS_PER_PAGE),
         getCategoriesSummaryKvGuardian(),
         getCommentsKvGuardian(),
     ]);
@@ -89,11 +95,19 @@ const ArticleTable = async () => {
                     </tr>
                 </tfoot>
             </table>
+            
+            {/* Pagination */}
+            <Pagination currentPage={page} totalPages={TOTAL_PAGES} />
         </div>
     );
 };
 
 export default ArticleTable;
+
+// Add PropTypes validation
+ArticleTable.propTypes = {
+    page: PropTypes.number,
+};
 
 export async function ArticleTableSkeleton() {
     return (
