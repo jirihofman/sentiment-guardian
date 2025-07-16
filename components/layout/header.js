@@ -47,10 +47,7 @@ export default function Header() {
                                     <tr>
                                         <th>GitHub:</th>
                                         <td>
-                                            <Link
-                                                passHref
-                                                href="https://github.com/jirihofman/sentiment-guardian"
-                                                >sentiment-guardian</Link>
+                                            <Link href="https://github.com/jirihofman/sentiment-guardian">sentiment-guardian</Link>
                                         </td>
                                     </tr>
                                 </tbody>
