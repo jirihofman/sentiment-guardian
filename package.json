@@ -6,12 +6,12 @@
   },
   "description": "Tracker of the sentiment of the Guardian latest headlines that also provides a commentary. Powered by OpenAI's GPT models.",
   "displayName": "The Sentiment of The Guardian",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "private": false,
   "license": "MIT",
   "type": "module",
   "engines": {
-    "node": ">=18.0.0",
+    "node": ">=20.0.0",
     "npm": ">=8.0.0"
   },
   "scripts": {
@@ -23,7 +23,7 @@
     "test:jest": "node --experimental-vm-modules node_modules/jest/bin/jest.js --watch",
     "test:build": "NODE_ENV=test next build",
     "test:start": "NODE_ENV=test next start -p 5100",
-    "pretest": "rm -rf coverage jest-coverage cypress-coverage .nyc_output || true",
+    "pretest": "rm -rf coverage jest-coverage .nyc_output || true",
     "mkdir:reports": "mkdir reports || true",
     "test:coverage:prepare-folders": "npm run pretest && (mkdir .nyc_output || true) && (mkdir reports || true)",
     "combine:reports": "npx nyc merge reports && mv coverage.json .nyc_output/out.json",
@@ -38,14 +38,14 @@
     "bootstrap": "^5.3.5",
     "chart.js": "^4.5.0",
     "lodash": "^4.17.21",
-    "next": "15.3.3",
+    "next": "^15.4.1",
     "node-html-parser": "^6.1.13",
     "openai": "^4.76.0",
-    "react": "19.1.0",
+    "react": "^19.1.0",
     "react-bootstrap": "^2.10.10",
     "react-bootstrap-icons": "^1.11.6",
     "react-chartjs-2": "^5.3.0",
-    "react-dom": "19.1.0",
+    "react-dom": "^19.1.0",
     "tailwindcss": "^4.1.5",
     "xml2js": "^0.6.2"
   },
@@ -54,12 +54,11 @@
     "encoding": "^0.1.13",
     "eslint": "9.30.1",
     "eslint-config-next": "15.3.5",
-    "eslint-plugin-cypress": "^5.1.0",
     "eslint-plugin-jest": "^28.11.0",
     "jest": "latest"
   },
   "nyc": {
-    "report-dir": "cypress-coverage",
+    "report-dir": "coverage",
     "exclude": [
       "pages/api/__coverage__.js",
       "jest.setup.js",
