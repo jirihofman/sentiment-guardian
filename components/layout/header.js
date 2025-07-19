@@ -20,8 +20,9 @@ export default function Header() {
                     </Navbar.Brand>
                     <Navbar.Collapse id="navbarScroll" className="justify-content-end">
                         <Nav className='me-auto'>
-                            <Link href="/sentiment-chart"><span className='d-none d-sm-inline me-2'>
-                                Sentiment Chart
+                            <Link href="/sentiment-chart"><span className='me-2'>
+                                <span className='d-none d-sm-inline'>Sentiment Chart</span>
+                                <span className='d-inline d-sm-none'>Chart</span>
                             </span></Link>
                             <Link href="/faq"><span className='d-none d-sm-inline me-2'>FAQ</span></Link>
                             <span role='button' data-bs-toggle='modal' data-bs-target='#exampleModal' className='underline text-blue-600'>About</span>
