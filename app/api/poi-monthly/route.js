@@ -50,7 +50,7 @@ async function doAllTheShitForAMonth(year, month) {
         // Run for current month.
         const currentYear = new Date().getFullYear();
         const currentMonth = new Date().getMonth() + 1;
-	
+
         // Are there any data for this month?
         const key = `ai-persons-of-interest-monthly:${currentYear}-${currentMonth}`;
         const personsOfInterestMonthly = await redis.get(key);
@@ -116,5 +116,9 @@ async function doAllTheShitForAMonth(year, month) {
     const previousMonth = month - 1;
     const previousYear = month === 1 ? year - 1 : year;
 
+    // Boundary condition: stop recursion if year/month is before 2023-01
+    if (previousYear < 2023 || (previousYear === 2023 && previousMonth < 1)) {
+        return 'Reached recursion boundary: 2023-01';
+    }
     return doAllTheShitForAMonth(previousYear, previousMonth);
 }
