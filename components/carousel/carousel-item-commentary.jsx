@@ -30,14 +30,14 @@ const CarouselCommentary = ({ comments, model }) => {
                                 <Button variant="secondary" title='Click to see the full comment.' onClick={handleShow} size='sm' style={{ marginLeft: '105px', marginRight:'5px', marginTop: '-16px' }}>
                                     <ChatDotsFill style={{ marginBottom: '5px' }} />
                                 </Button>
-                                <audio controls src={comments.audio} style={{ maxHeight: '24px', overflow: 'hidden', width: '180px' }} />
+                                <audio controls src={comments.audio} style={{ display: 'inline', maxHeight: '24px', overflow: 'hidden', width: '180px' }} />
                             </span>
                             <span className="d-lg-none">
                                 Commentary
                                 <Button variant="secondary" title='Click to see the full comment.' onClick={handleShow} size='sm' style={{ marginLeft: '5px', marginRight: '5px', marginTop: '-16px' }}>
                                     <ChatDotsFill style={{ marginBottom: '5px' }} />
                                 </Button>
-                                <audio controls src={comments.audio} style={{ maxHeight: '24px', overflow: 'hidden', width: '100px' }} />
+                                <audio controls src={comments.audio} style={{ display: 'inline', maxHeight: '24px', overflow: 'hidden', width: '100px' }}/>
                             </span>
                         </div>
                         <div className="card-body " style={cardBodyStyle}>

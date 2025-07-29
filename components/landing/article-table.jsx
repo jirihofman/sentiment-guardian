@@ -7,6 +7,7 @@ import { Carousel } from 'react-bootstrap';
 import CarouselSummary from '../carousel/carousel-item-summary';
 import CarouselCommentary from '../carousel/carousel-item-commentary';
 import { MODEL_GPT_SENTIMENT } from '../../lib/const';
+import Pagination from '../pagination';
 import PropTypes from 'prop-types';
 
 const header = 'Latest Guardian headlines';
@@ -34,14 +35,24 @@ FrontPageCarousel.propTypes = {
     summary: PropTypes.object.isRequired,
 };
 
-const ArticleTable = async () => {
+const ArticleTable = async ({ page = 1 }) => {
+    const ITEMS_PER_PAGE = 20;
+    const TOTAL_PAGES = 5;
+    
+    // Calculate offset for pagination
+    const offset = (page - 1) * ITEMS_PER_PAGE;
 
     // eslint-disable-next-line no-undef
     const [ articles, summary, comments ] = await Promise.all([
-        getArticlesKvGuardian(),
+        getArticlesKvGuardian(offset, ITEMS_PER_PAGE),
         getCategoriesSummaryKvGuardian(),
         getCommentsKvGuardian(),
     ]);
+    const summaryWithCounts = Object.keys(summary).map(cat => ({
+        color: getBgColorByEmoji(cat),
+        count: summary[cat],
+        emoji: cat,
+    }));
     // eslint-disable-next-line no-console
     console.log('Loaded %d cached articles', articles.length);
     // eslint-disable-next-line no-console
@@ -49,7 +60,7 @@ const ArticleTable = async () => {
 
     return (
         <div className='container px-4 py-0 my-3'>
-            <FrontPageCarousel articles={articles} summary={summary} comments={comments} />
+            <FrontPageCarousel articles={articles} summary={summaryWithCounts} comments={comments} />
             <h2 className="pb-2 border-bottom">{header}</h2>
             <table className="table">
                 <TableHeader />
@@ -84,11 +95,19 @@ const ArticleTable = async () => {
                     </tr>
                 </tfoot>
             </table>
+            
+            {/* Pagination */}
+            <Pagination currentPage={page} totalPages={TOTAL_PAGES} />
         </div>
     );
 };
 
 export default ArticleTable;
+
+// Add PropTypes validation
+ArticleTable.propTypes = {
+    page: PropTypes.number,
+};
 
 export async function ArticleTableSkeleton() {
     return (
@@ -152,4 +171,22 @@ async function FrontPageCarouselSkeleton() {
             </div>
         </Carousel>
     );
+}
+
+// Example
+function getBgColorByEmoji(emoji) {
+    switch (emoji) {
+        case '😭':
+            return 'bg-red-500';
+        case '😔':
+            return 'bg-orange-500';
+        case '😐':
+            return 'bg-yellow-500';
+        case '🙂':
+            return 'bg-lime-500';
+        case '😀':
+            return 'bg-green-500';
+        default:
+            return 'bg-gray-500';
+    }
 }

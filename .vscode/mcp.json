@@ -1,0 +1,47 @@
+{
+	"inputs": [
+		// The "inputs" section defines the inputs required for the MCP server configuration. 
+		{
+			"type": "promptString",
+			"id": "upstashRestUrl",
+			"description": "Enter the Upstash REST URL",
+			"password": false
+		},
+		{
+			"type": "promptString",
+			"id": "upstashRestToken",
+			"description": "Enter the Upstash REST Token",
+			"password": true
+		},
+		{
+			"type": "promptString",
+			"id": "upstashRestEmail",
+			"description": "Enter the Upstash REST Email",
+			"password": false
+		},
+		{
+			"type": "promptString",
+			"id": "upstashRestApiKey",
+			"description": "Enter the Upstash REST API Key",
+			"password": true
+		}
+	],
+	"servers": {
+		// The "servers" section defines the MCP servers you want to use.
+		"upstash": {
+			"type": "stdio",
+			"command": "npx",
+			"args": [
+				"-y",
+				"@upstash/mcp-server",
+				"run"
+			],
+			"env": {
+				"UPSTASH_REST_URL": "${input:upstashRestUrl}",
+				"UPSTASH_REST_TOKEN": "${input:upstashRestToken}",
+				"UPSTASH_EMAIL": "${input:upstashRestEmail}",
+				"UPSTASH_API_KEY": "${input:upstashRestApiKey}"
+			}
+		}
+	}
+}

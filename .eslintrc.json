@@ -25,12 +25,17 @@
         "cypress/**",
         "**/*.cy.js", "**/*.cy.jsx"
       ],
-      "plugins": [
-        "cypress"
-      ],
-      "extends": [
-        "plugin:cypress/recommended"
-      ]
+      "globals": {
+        "cy": "readonly",
+        "Cypress": "readonly",
+        "describe": "readonly",
+        "it": "readonly",
+        "expect": "readonly",
+        "beforeEach": "readonly",
+        "afterEach": "readonly",
+        "before": "readonly",
+        "after": "readonly"
+      }
     }
   ],
   "rules": {

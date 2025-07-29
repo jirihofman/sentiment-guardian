@@ -1,5 +1,5 @@
-/* eslint-disable no-console */
 import { Redis } from '@upstash/redis';
+import { timingSafeEqual } from 'crypto';
 
 export const revalidate = 0;
 
@@ -8,12 +8,18 @@ const redis = new Redis({
     url: process.env.UPSTASH_REDIS_REST_URL,
 });
 
-export async function GET() {
+export async function POST(req) {
+    const { adminApiKey } = await req.json();
+    const expectedKey = process.env.ADMIN_API_KEY;
+    
+    if (!adminApiKey || !expectedKey || 
+        !timingSafeEqual(Buffer.from(adminApiKey), Buffer.from(expectedKey))) {
+        return new Response('Unauthorized', { status: 403 });
+    }
 
     // flushall
     await redis.flushall();
     // TODO: Reset vercel cache by tag.
 
-    // Select latest 100 articles from Redis.
     return new Response('Redis flushed', { status: 200 });
 }

@@ -20,8 +20,12 @@ export default function Header() {
                     </Navbar.Brand>
                     <Navbar.Collapse id="navbarScroll" className="justify-content-end">
                         <Nav className='me-auto'>
-                            <Link passHref href="/faq" legacyBehavior><Nav.Link>FAQ</Nav.Link></Link>
-                            <Nav.Link role='button' data-bs-toggle='modal' data-bs-target='#exampleModal'>About</Nav.Link>
+                            <Link href="/sentiment-chart"><span className='me-2'>
+                                <span className='d-none d-sm-inline'>Sentiment Chart</span>
+                                <span className='d-inline d-sm-none'>Chart</span>
+                            </span></Link>
+                            <Link href="/faq"><span className='d-none d-sm-inline me-2'>FAQ</span></Link>
+                            <span role='button' data-bs-toggle='modal' data-bs-target='#exampleModal' className='underline text-blue-600'>About</span>
                         </Nav>
                     </Navbar.Collapse>
                 </Container>
@@ -44,10 +48,7 @@ export default function Header() {
                                     <tr>
                                         <th>GitHub:</th>
                                         <td>
-                                            <Link
-                                                passHref
-                                                href="https://github.com/jirihofman/sentiment-guardian"
-                                                legacyBehavior>sentiment-guardian</Link>
+                                            <Link href="https://github.com/jirihofman/sentiment-guardian">sentiment-guardian</Link>
                                         </td>
                                     </tr>
                                 </tbody>

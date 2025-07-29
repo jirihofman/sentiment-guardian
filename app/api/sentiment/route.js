@@ -16,7 +16,7 @@ const redis = new Redis({
 async function doAllTheShit() {
     const articles = await redis.zrange('article:guardian', 0, -1, { count: 100, offset: 0, rev: true, withScores: false });
     const articlesWithoutSentiment = articles.filter(article => !article.sentiment);
-    const max = 2;
+    const max = 4;
     let processed = 0;
 
     console.log('articlesWithoutSentiment', articlesWithoutSentiment);
@@ -31,7 +31,7 @@ async function doAllTheShit() {
         const chatCompletion = await openai.chat.completions.create({
             messages: [{ content: message, role: 'user' }],
             model: MODEL_GPT_SENTIMENT,
-            user: 'The sentiment of The Guardian'
+            user: 'The Sentiment of The Guardian'
         });
         console.log('chatCompletion for article', article.title, chatCompletion.choices);
         const sentiment = chatCompletion.choices[0].message.content;
