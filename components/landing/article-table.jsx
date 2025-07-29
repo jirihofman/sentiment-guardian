@@ -6,6 +6,7 @@ import { getSentiment } from '../../util/util';
 import { Carousel } from 'react-bootstrap';
 import CarouselSummary from '../carousel/carousel-item-summary';
 import CarouselCommentary from '../carousel/carousel-item-commentary';
+import CarouselPoi from '../carousel/carousel-item-poi';
 import { MODEL_GPT_SENTIMENT } from '../../lib/const';
 import Pagination from '../pagination';
 import PropTypes from 'prop-types';
@@ -17,7 +18,33 @@ const carouselItemStyle = {
     overflow: 'hidden',
 };
 
-const FrontPageCarousel = ({ articles, comments, summary }) => (
+// Function to fetch POI data
+const getPoiData = async () => {
+    try {
+        // Don't fetch during build time
+        if (process.env.NODE_ENV === 'test' || !process.env.UPSTASH_REDIS_REST_URL) {
+            return [];
+        }
+        
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/poi-monthly`, {
+            next: {
+                // 24 hours
+                revalidate: 60 * 60 * 24,
+                tags: ['poi-monthly']
+            },
+        });
+        if (!response.ok) {
+            console.error('Failed to fetch POI data:', response.statusText);
+            return [];
+        }
+        return await response.json();
+    } catch (error) {
+        console.error('Error fetching POI data:', error);
+        return [];
+    }
+};
+
+const FrontPageCarousel = ({ articles, comments, summary, poiData }) => (
 
     <Carousel controls={true} indicators={false} variant='dark' style={{ boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)' }} interval={null} className='mb-2'>
         <div className="carousel-item" style={carouselItemStyle}>
@@ -26,6 +53,9 @@ const FrontPageCarousel = ({ articles, comments, summary }) => (
         <div className="carousel-item" style={carouselItemStyle}>
             <CarouselCommentary comments={comments} model={MODEL_GPT_SENTIMENT} />
         </div>
+        <div className="carousel-item" style={carouselItemStyle}>
+            <CarouselPoi poiData={poiData} />
+        </div>
     </Carousel>
 );
 
@@ -33,6 +63,7 @@ FrontPageCarousel.propTypes = {
     articles: PropTypes.array.isRequired,
     comments: PropTypes.object.isRequired,
     summary: PropTypes.object.isRequired,
+    poiData: PropTypes.array,
 };
 
 const ArticleTable = async ({ page = 1 }) => {
@@ -43,10 +74,11 @@ const ArticleTable = async ({ page = 1 }) => {
     const offset = (page - 1) * ITEMS_PER_PAGE;
 
     // eslint-disable-next-line no-undef
-    const [ articles, summary, comments ] = await Promise.all([
+    const [ articles, summary, comments, poiData ] = await Promise.all([
         getArticlesKvGuardian(offset, ITEMS_PER_PAGE),
         getCategoriesSummaryKvGuardian(),
         getCommentsKvGuardian(),
+        getPoiData(),
     ]);
     const summaryWithCounts = Object.keys(summary).map(cat => ({
         color: getBgColorByEmoji(cat),
@@ -60,7 +92,7 @@ const ArticleTable = async ({ page = 1 }) => {
 
     return (
         <div className='container px-4 py-0 my-3'>
-            <FrontPageCarousel articles={articles} summary={summaryWithCounts} comments={comments} />
+            <FrontPageCarousel articles={articles} summary={summaryWithCounts} comments={comments} poiData={poiData} />
             <h2 className="pb-2 border-bottom">{header}</h2>
             <table className="table">
                 <TableHeader />
