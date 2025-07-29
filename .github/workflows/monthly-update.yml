@@ -1,0 +1,16 @@
+name: Monthly Update
+
+on:
+  schedule:
+    - cron: '0 5 1 * *'
+  workflow_dispatch:
+
+env:
+  ADMIN_API_KEY: ${{ secrets.ADMIN_API_KEY }}
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 1
+    steps:
+    - run: curl -XPOST https://sentiment-guardian.vercel.app/api/monthly-update -d '{"adminApiKey":"${{ secrets.ADMIN_API_KEY }}"}'
+    - run: echo "Done persons of interest!"
