@@ -1,33 +1,8 @@
 import React from 'react';
-
-// Function to fetch POI data
-const getPoiData = async () => {
-    try {
-        // Don't fetch during build time
-        if (process.env.NODE_ENV === 'test' || !process.env.UPSTASH_REDIS_REST_URL) {
-            return [];
-        }
-        
-        const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/poi-monthly`, {
-            next: {
-                // 24 hours
-                revalidate: 60 * 60 * 24,
-                tags: ['poi-monthly']
-            },
-        });
-        if (!response.ok) {
-            console.error('Failed to fetch POI data:', response.statusText);
-            return [];
-        }
-        return await response.json();
-    } catch (error) {
-        console.error('Error fetching POI data:', error);
-        return [];
-    }
-};
+import { getPoiMonthlyKvGuardian } from '../../lib/data';
 
 const PoiMonthly = async () => {
-    const poiData = await getPoiData();
+    const poiData = await getPoiMonthlyKvGuardian();
 
     if (!poiData || poiData.length === 0) {
         return (

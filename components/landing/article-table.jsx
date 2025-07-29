@@ -1,7 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import range from 'lodash/range';
-import { getArticlesKvGuardian, getCategoriesSummaryKvGuardian, getCommentsKvGuardian } from '../../lib/data';
+import { getArticlesKvGuardian, getCategoriesSummaryKvGuardian, getCommentsKvGuardian, getPoiMonthlyKvGuardian } from '../../lib/data';
 import { getSentiment } from '../../util/util';
 import { Carousel } from 'react-bootstrap';
 import CarouselSummary from '../carousel/carousel-item-summary';
@@ -16,32 +16,6 @@ const header = 'Latest Guardian headlines';
 const carouselItemStyle = {
     maxHeight: '200px',
     overflow: 'hidden',
-};
-
-// Function to fetch POI data
-const getPoiData = async () => {
-    try {
-        // Don't fetch during build time
-        if (process.env.NODE_ENV === 'test' || !process.env.UPSTASH_REDIS_REST_URL) {
-            return [];
-        }
-        
-        const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/poi-monthly`, {
-            next: {
-                // 24 hours
-                revalidate: 60 * 60 * 24,
-                tags: ['poi-monthly']
-            },
-        });
-        if (!response.ok) {
-            console.error('Failed to fetch POI data:', response.statusText);
-            return [];
-        }
-        return await response.json();
-    } catch (error) {
-        console.error('Error fetching POI data:', error);
-        return [];
-    }
 };
 
 const FrontPageCarousel = ({ articles, comments, summary, poiData }) => (
@@ -78,7 +52,7 @@ const ArticleTable = async ({ page = 1 }) => {
         getArticlesKvGuardian(offset, ITEMS_PER_PAGE),
         getCategoriesSummaryKvGuardian(),
         getCommentsKvGuardian(),
-        getPoiData(),
+        getPoiMonthlyKvGuardian(),
     ]);
     const summaryWithCounts = Object.keys(summary).map(cat => ({
         color: getBgColorByEmoji(cat),
