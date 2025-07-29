@@ -1,7 +1,6 @@
 import OpenAI from 'openai';
 import { Redis } from '@upstash/redis';
 
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 const redis = new Redis({
     token: process.env.UPSTASH_REDIS_REST_TOKEN,
     url: process.env.UPSTASH_REDIS_REST_URL,
@@ -33,7 +32,58 @@ const getArticlesKvGuardianByDate = async (start, end) => {
     return titles;
 };
 
+export async function GET() {
+    try {
+        // Check if Redis is configured
+        if (!process.env.UPSTASH_REDIS_REST_URL || !process.env.UPSTASH_REDIS_REST_TOKEN) {
+            return new Response(JSON.stringify([]), {
+                headers: { 'Content-Type': 'application/json' },
+            });
+        }
+
+        // Get all POI data keys from Redis and retrieve the data
+        const keys = await redis.keys('ai-persons-of-interest-monthly:*');
+        
+        if (!keys.length) {
+            return new Response(JSON.stringify([]), {
+                headers: { 'Content-Type': 'application/json' },
+            });
+        }
+
+        // Get all POI data
+        const poiDataPromises = keys.map(async (key) => {
+            const data = await redis.get(key);
+            const yearMonth = key.replace('ai-persons-of-interest-monthly:', '');
+            return {
+                yearMonth,
+                persons: JSON.parse(data),
+            };
+        });
+
+        // eslint-disable-next-line no-undef
+        const poiData = await Promise.all(poiDataPromises);
+        
+        // Sort by year-month descending (latest first)
+        poiData.sort((a, b) => b.yearMonth.localeCompare(a.yearMonth));
+
+        return new Response(JSON.stringify(poiData), {
+            headers: { 'Content-Type': 'application/json' },
+        });
+    } catch (error) {
+        console.error('Error fetching POI data:', error);
+        return new Response(JSON.stringify({ error: 'Failed to fetch POI data' }), {
+            status: 500,
+            headers: { 'Content-Type': 'application/json' },
+        });
+    }
+}
+
 export async function POST(req) {
+    // Check if required environment variables are available
+    if (!process.env.ADMIN_API_KEY || !process.env.OPENAI_API_KEY || !process.env.UPSTASH_REDIS_REST_URL) {
+        return new Response('Service temporarily unavailable', { status: 503 });
+    }
+
     // read adminApiKey from request body.
     const { adminApiKey } = await req.json();
     if (adminApiKey === process.env.ADMIN_API_KEY) {
@@ -45,6 +95,11 @@ export async function POST(req) {
 }
 
 async function doAllTheShitForAMonth(year, month) {
+    if (!process.env.OPENAI_API_KEY) {
+        throw new Error('OpenAI API key not configured');
+    }
+    
+    const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
     if (!year && !month) {
         // Run for current month.
