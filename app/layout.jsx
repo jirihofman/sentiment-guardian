@@ -39,7 +39,6 @@ export const metadata = {
     title: pjson.displayName,
 };
 
-// Add prop types validation
 LocaleLayout.propTypes = {
     children: PropTypes.node.isRequired,
 };
