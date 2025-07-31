@@ -36,7 +36,7 @@ describe('POI Monthly Data', () => {
         expect(result).toEqual([]);
     });
 
-    it('should fetch and sort POI monthly data in ASCENDING order (oldest first)', async () => {
+    it('should fetch and sort POI monthly data in DESCENDING order (latest first)', async () => {
         const keys = mockPoiData.map(item => item.key);
         const getResults = mockPoiData.map(item => ({ result: item.result }));
 
@@ -56,28 +56,28 @@ describe('POI Monthly Data', () => {
 
         const result = await getPoiMonthlyKvGuardian();
         
-        // Should have all months
+        // Should have all months that exist in data
         expect(result).toHaveLength(4);
         
-        // Check the order - should be ASCENDING (oldest first) - THIS IS THE EXPECTED FIX
-        expect(result[0].yearMonth).toBe('2023-12');
-        expect(result[1].yearMonth).toBe('2024-01');
-        expect(result[2].yearMonth).toBe('2024-02');
-        expect(result[3].yearMonth).toBe('2024-03');
+        // Check the order - should be DESCENDING (latest first)
+        expect(result[0].yearMonth).toBe('2024-03');
+        expect(result[1].yearMonth).toBe('2024-02');
+        expect(result[2].yearMonth).toBe('2024-01');
+        expect(result[3].yearMonth).toBe('2023-12');
         
         // Check persons data
-        expect(result[0].persons).toEqual(['David Johnson', 'Eve Adams']);
-        expect(result[1].persons).toEqual(['John Doe', 'Jane Smith']);
-        expect(result[2].persons).toEqual(['Charlie Davis']);
-        expect(result[3].persons).toEqual(['Alice Brown', 'Bob Wilson']);
+        expect(result[0].persons).toEqual(['Alice Brown', 'Bob Wilson']);
+        expect(result[1].persons).toEqual(['Charlie Davis']);
+        expect(result[2].persons).toEqual(['John Doe', 'Jane Smith']);
+        expect(result[3].persons).toEqual(['David Johnson', 'Eve Adams']);
     });
 
-    it('should fill in missing months with empty data', async () => {
+    it('should only return months that have data (no gap filling)', async () => {
         // Simulate data with gaps (missing February)
         const mockDataWithGaps = [
             { key: 'ai-persons-of-interest-monthly:2024-01', result: '["John Doe"]' },
             { key: 'ai-persons-of-interest-monthly:2024-03', result: '["Alice Brown"]' },
-            // Missing 2024-02
+            // Missing 2024-02 - should not be filled in
         ];
         
         const keys = mockDataWithGaps.map(item => item.key);
@@ -99,13 +99,12 @@ describe('POI Monthly Data', () => {
 
         const result = await getPoiMonthlyKvGuardian();
         
-        // Should fill in the missing month - THIS IS THE EXPECTED FIX
-        expect(result).toHaveLength(3);
-        expect(result[0].yearMonth).toBe('2024-01');
-        expect(result[0].persons).toEqual(['John Doe']);
-        expect(result[1].yearMonth).toBe('2024-02'); // This should be filled in
-        expect(result[1].persons).toEqual([]); // Empty array for missing month
-        expect(result[2].yearMonth).toBe('2024-03');
-        expect(result[2].persons).toEqual(['Alice Brown']);
+        // Should only have the months with actual data (no gap filling)
+        expect(result).toHaveLength(2);
+        expect(result[0].yearMonth).toBe('2024-03'); // Latest first
+        expect(result[0].persons).toEqual(['Alice Brown']);
+        expect(result[1].yearMonth).toBe('2024-01'); // Older second
+        expect(result[1].persons).toEqual(['John Doe']);
+        // 2024-02 should NOT be present
     });
 });
