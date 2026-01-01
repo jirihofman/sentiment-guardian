@@ -1,26 +1,18 @@
 import PropTypes from 'prop-types';
 
 const CarouselPoi = ({ poiData }) => {
-    const cardBodyStyle = {
-        maxHeight: '120px',
-        minHeight: '120px',
-        overflow: 'hidden',
-    };
-
     // Get the most recent month's data
     const latestPoi = poiData && poiData.length > 0 ? poiData[0] : null;
 
     if (!latestPoi) {
         return (
-            <div className='mx-0 p-0'>
-                <div className="row row-cols-1 row-cols-1 g-2 mb-0">
-                    <div className="col">
-                        <div className="card h-100">
-                            <div className="card-header">Person of Interest</div>
-                            <div className="card-body text-center" style={cardBodyStyle}>
-                                <p className="text-muted">No data available</p>
-                            </div>
-                        </div>
+            <div className='p-3'>
+                <div className="card border-0 shadow-sm">
+                    <div className="card-header bg-white border-0">
+                        <h6 className="mb-0 fw-semibold">Person of Interest</h6>
+                    </div>
+                    <div className="card-body text-center" style={{ minHeight: '120px' }}>
+                        <p className="text-muted mb-0">No data available</p>
                     </div>
                 </div>
             </div>
@@ -31,26 +23,23 @@ const CarouselPoi = ({ poiData }) => {
     const monthName = new Date(year, month - 1).toLocaleString('default', { month: 'long' });
 
     return (
-        <div className='mx-0 p-0'>
-            <div className="row row-cols-1 row-cols-1 g-2 mb-0">
-                <div className="col">
-                    <div className="card h-100">
-                        <div className="card-header">
-                            Person of Interest - {monthName} {year}
-                        </div>
-                        <div className="card-body" style={cardBodyStyle}>
-                            <div className="text-center">
-                                {latestPoi.persons.map((person, index) => (
-                                    <span key={index} className="badge bg-primary me-2 mb-2">
-                                        {person}
-                                    </span>
-                                ))}
-                            </div>
-                            <p className="small text-muted mt-2 mb-0">
-                                Most discussed persons in The Guardian headlines
-                            </p>
-                        </div>
+        <div className='p-3'>
+            <div className="card border-0 shadow-sm">
+                <div className="card-header bg-white border-0">
+                    <h6 className="mb-0 fw-semibold">Persons of Interest</h6>
+                    <small className="text-muted">{monthName} {year}</small>
+                </div>
+                <div className="card-body" style={{ minHeight: '120px' }}>
+                    <div className="d-flex flex-wrap gap-2 mb-2">
+                        {latestPoi.persons.map((person, index) => (
+                            <span key={index} className="badge bg-primary">
+                                {person}
+                            </span>
+                        ))}
                     </div>
+                    <p className="small text-muted mb-0">
+                        Most discussed persons in The Guardian headlines
+                    </p>
                 </div>
             </div>
         </div>
