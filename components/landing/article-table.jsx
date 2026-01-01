@@ -13,6 +13,11 @@ import PropTypes from 'prop-types';
 
 const header = 'Latest Guardian Headlines';
 
+const carouselItemStyle = {
+    maxHeight: '200px',
+    overflow: 'hidden',
+};
+
 const FrontPageCarousel = ({ articles, comments, summary, poiData }) => (
     <Carousel 
         controls={true} 
@@ -22,15 +27,15 @@ const FrontPageCarousel = ({ articles, comments, summary, poiData }) => (
         className='mb-4'
         style={{ borderRadius: '0.75rem', overflow: 'hidden' }}
     >
-        <Carousel.Item>
+        <div className="carousel-item" style={carouselItemStyle}>
             <CarouselSummary articles={articles} summary={summary} />
-        </Carousel.Item>
-        <Carousel.Item>
+        </div>
+        <div className="carousel-item" style={carouselItemStyle}>
             <CarouselCommentary comments={comments} model={MODEL_GPT_SENTIMENT} />
-        </Carousel.Item>
-        <Carousel.Item>
+        </div>
+        <div className="carousel-item" style={carouselItemStyle}>
             <CarouselPoi poiData={poiData} />
-        </Carousel.Item>
+        </div>
     </Carousel>
 );
 
