@@ -7,29 +7,29 @@ import Link from 'next/link';
 export default function Header() {
 
     return (
-        <header>
+        <header className="mb-4">
             <noscript>
                 <style>{'.nojs-show { opacity: 1; top: 0; }'}</style>
             </noscript>
-            <Navbar bg="light" expand="sm">
+            <Navbar expand="sm" className="py-3">
                 <Container fluid>
-                    <Navbar.Toggle aria-controls="navbarScroll" />
-                    <Navbar.Brand href="/">
-                        <span className="d-none d-sm-inline">{pjson.displayName}</span>
-                        <span className="d-inline d-sm-none">{pjson.displayName.substring(0,13)}</span>
+                    <Navbar.Brand href="/" className="d-flex align-items-center">
+                        <span className="fs-4 fw-bold d-none d-sm-inline">📰 {pjson.displayName}</span>
+                        <span className="fs-5 fw-bold d-inline d-sm-none">📰 {pjson.displayName.substring(0,13)}</span>
                     </Navbar.Brand>
-                    <Navbar.Collapse id="navbarScroll" className="justify-content-end">
-                        <Nav className='me-auto'>
-                            <Link href="/sentiment-chart"><span className='me-2'>
+                    <Navbar.Toggle aria-controls="navbarScroll" />
+                    <Navbar.Collapse id="navbarScroll">
+                        <Nav className='ms-auto align-items-center gap-3'>
+                            <Link href="/sentiment-chart" className="nav-link">
                                 <span className='d-none d-sm-inline'>Sentiment Chart</span>
                                 <span className='d-inline d-sm-none'>Chart</span>
-                            </span></Link>
-                            <Link href="/poi-monthly"><span className='me-2'>
+                            </Link>
+                            <Link href="/poi-monthly" className="nav-link">
                                 <span className='d-none d-sm-inline'>Persons of Interest</span>
                                 <span className='d-inline d-sm-none'>POI</span>
-                            </span></Link>
-                            <Link href="/faq"><span className='d-none d-sm-inline me-2'>FAQ</span></Link>
-                            <span role='button' data-bs-toggle='modal' data-bs-target='#exampleModal' className='underline text-blue-600'>About</span>
+                            </Link>
+                            <Link href="/faq" className="nav-link d-none d-sm-inline">FAQ</Link>
+                            <span role='button' data-bs-toggle='modal' data-bs-target='#exampleModal' className='nav-link cursor-pointer'>About</span>
                         </Nav>
                     </Navbar.Collapse>
                 </Container>
@@ -38,26 +38,30 @@ export default function Header() {
             <div className="modal fade" id="exampleModal" tabIndex='-1' aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <Modal.Dialog className="modal-dialog">
                     <div className="modal-content">
-                        <Modal.Header>
-                            <h5 className="modal-title" id="exampleModalLabel">About <b>{pjson.displayName}</b> 📰</h5>
+                        <Modal.Header closeButton>
+                            <h5 className="modal-title fw-bold" id="exampleModalLabel">About {pjson.displayName} 📰</h5>
                         </Modal.Header>
-                        <div className="modal-body">
-                            <p>{pjson.description}</p>
-                            <table>
-                                <tbody>
-                                    <tr>
-                                        <th>Version:</th>
-                                        <td>{[process.env.NEXT_PUBLIC_NODE_ENV || process.env.NODE_ENV, pjson.version].join('-')}</td>
-                                    </tr>
-                                    <tr>
-                                        <th>GitHub:</th>
-                                        <td>
-                                            <Link href="https://github.com/jirihofman/sentiment-guardian">sentiment-guardian</Link>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
+                        <Modal.Body>
+                            <p className="mb-3">{pjson.description}</p>
+                            <div className="table-responsive">
+                                <table className="table table-sm">
+                                    <tbody>
+                                        <tr>
+                                            <th className="text-muted">Version:</th>
+                                            <td>{[process.env.NEXT_PUBLIC_NODE_ENV || process.env.NODE_ENV, pjson.version].join('-')}</td>
+                                        </tr>
+                                        <tr>
+                                            <th className="text-muted">GitHub:</th>
+                                            <td>
+                                                <Link href="https://github.com/jirihofman/sentiment-guardian" target="_blank" rel="noopener noreferrer">
+                                                    sentiment-guardian
+                                                </Link>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </Modal.Body>
                     </div>
                 </Modal.Dialog>
             </div>

@@ -51,9 +51,14 @@ const SentimentChart = ({ height = 400 }) => {
 
     if (loading) {
         return (
-            <div className="d-flex justify-content-center align-items-center" style={{ height }}>
-                <div className="spinner-border text-primary" role="status">
-                    <span className="sr-only">Loading chart...</span>
+            <div className="card">
+                <div className="card-body d-flex justify-content-center align-items-center" style={{ height: `${height}px` }}>
+                    <div className="text-center">
+                        <div className="spinner-border text-primary mb-3" role="status">
+                            <span className="visually-hidden">Loading chart...</span>
+                        </div>
+                        <p className="text-muted mb-0">Loading sentiment data...</p>
+                    </div>
                 </div>
             </div>
         );
@@ -61,16 +66,26 @@ const SentimentChart = ({ height = 400 }) => {
 
     if (error) {
         return (
-            <div className="alert alert-danger" role="alert">
-                Error loading sentiment chart: {error}
+            <div className="alert alert-danger d-flex align-items-center" role="alert">
+                <svg className="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Error:">
+                    <use xlinkHref="#exclamation-triangle-fill"/>
+                </svg>
+                <div>
+                    Error loading sentiment chart: {error}
+                </div>
             </div>
         );
     }
 
     if (!chartData || chartData.length === 0) {
         return (
-            <div className="alert alert-info" role="alert">
-                No sentiment data available for chart display.
+            <div className="alert alert-info d-flex align-items-center" role="alert">
+                <svg className="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Info:">
+                    <use xlinkHref="#info-fill"/>
+                </svg>
+                <div>
+                    No sentiment data available for chart display.
+                </div>
             </div>
         );
     }
@@ -78,11 +93,21 @@ const SentimentChart = ({ height = 400 }) => {
     const data = {
         datasets: [
             {
-                backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                borderColor: 'rgb(75, 192, 192)',
+                backgroundColor: 'rgba(37, 99, 235, 0.1)',
+                borderColor: 'rgb(37, 99, 235)',
+                borderWidth: 2,
                 data: chartData.map(item => item.sentiment),
+                fill: true,
                 label: 'Average Daily Sentiment',
-                tension: 0.1,
+                pointBackgroundColor: 'rgb(37, 99, 235)',
+                pointBorderColor: '#fff',
+                pointBorderWidth: 2,
+                pointHoverBackgroundColor: '#fff',
+                pointHoverBorderColor: 'rgb(37, 99, 235)',
+                pointHoverBorderWidth: 2,
+                pointHoverRadius: 6,
+                pointRadius: 4,
+                tension: 0.3,
             },
         ],
         labels: chartData.map(item => item.date),
@@ -91,27 +116,88 @@ const SentimentChart = ({ height = 400 }) => {
     const options = {
         plugins: {
             legend: {
+                display: true,
+                labels: {
+                    boxHeight: 8,
+                    boxWidth: 40,
+                    font: {
+                        size: 13,
+                        weight: '500',
+                    },
+                    padding: 15,
+                    usePointStyle: false,
+                },
                 position: 'top',
             },
             title: {
-                display: true,
-                text: 'Guardian Headlines Sentiment Over Time',
+                display: false,
+            },
+            tooltip: {
+                backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                bodyColor: '#0f172a',
+                bodyFont: {
+                    size: 13,
+                },
+                borderColor: '#e2e8f0',
+                borderWidth: 1,
+                callbacks: {
+                    label: function(context) {
+                        return `Sentiment: ${context.parsed.y}/100`;
+                    }
+                },
+                padding: 12,
+                titleColor: '#64748b',
+                titleFont: {
+                    size: 13,
+                    weight: '600',
+                },
             },
         },
         responsive: true,
+        maintainAspectRatio: false,
         scales: {
             x: {
-                title: {
+                grid: {
+                    color: '#f1f5f9',
                     display: true,
+                },
+                ticks: {
+                    color: '#64748b',
+                    font: {
+                        size: 12,
+                    },
+                },
+                title: {
+                    color: '#64748b',
+                    display: true,
+                    font: {
+                        size: 13,
+                        weight: '600',
+                    },
                     text: 'Date',
                 },
             },
             y: {
                 beginAtZero: false,
+                grid: {
+                    color: '#f1f5f9',
+                    display: true,
+                },
                 max: 100,
                 min: 0,
+                ticks: {
+                    color: '#64748b',
+                    font: {
+                        size: 12,
+                    },
+                },
                 title: {
+                    color: '#64748b',
                     display: true,
+                    font: {
+                        size: 13,
+                        weight: '600',
+                    },
                     text: 'Sentiment Score (1-100)',
                 },
             },
@@ -119,12 +205,12 @@ const SentimentChart = ({ height = 400 }) => {
     };
 
     return (
-        <div className="card mb-4">
+        <div className="card">
             <div className="card-header">
-                <h5 className="card-title mb-0">Sentiment Trends</h5>
+                <h5 className="mb-0 fw-semibold">Sentiment Trends Over Time</h5>
             </div>
-            <div className="card-body">
-                <Line data={data} options={options} height={height} />
+            <div className="card-body" style={{ height: `${height}px` }}>
+                <Line data={data} options={options} />
             </div>
         </div>
     );

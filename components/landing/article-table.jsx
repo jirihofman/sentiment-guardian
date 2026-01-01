@@ -11,25 +11,26 @@ import { MODEL_GPT_SENTIMENT } from '../../lib/const';
 import Pagination from '../pagination';
 import PropTypes from 'prop-types';
 
-const header = 'Latest Guardian headlines';
-
-const carouselItemStyle = {
-    maxHeight: '200px',
-    overflow: 'hidden',
-};
+const header = 'Latest Guardian Headlines';
 
 const FrontPageCarousel = ({ articles, comments, summary, poiData }) => (
-
-    <Carousel controls={true} indicators={false} variant='dark' style={{ boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)' }} interval={null} className='mb-2'>
-        <div className="carousel-item" style={carouselItemStyle}>
+    <Carousel 
+        controls={true} 
+        indicators={false} 
+        variant='dark' 
+        interval={null} 
+        className='mb-4'
+        style={{ borderRadius: '0.75rem', overflow: 'hidden' }}
+    >
+        <Carousel.Item>
             <CarouselSummary articles={articles} summary={summary} />
-        </div>
-        <div className="carousel-item" style={carouselItemStyle}>
+        </Carousel.Item>
+        <Carousel.Item>
             <CarouselCommentary comments={comments} model={MODEL_GPT_SENTIMENT} />
-        </div>
-        <div className="carousel-item" style={carouselItemStyle}>
+        </Carousel.Item>
+        <Carousel.Item>
             <CarouselPoi poiData={poiData} />
-        </div>
+        </Carousel.Item>
     </Carousel>
 );
 
@@ -65,42 +66,53 @@ const ArticleTable = async ({ page = 1 }) => {
     console.log('Loaded %d cached categories', Object.keys(summary).length);
 
     return (
-        <div className='container px-4 py-0 my-3'>
+        <div className='container px-4 py-0 my-4'>
             <FrontPageCarousel articles={articles} summary={summaryWithCounts} comments={comments} poiData={poiData} />
-            <h2 className="pb-2 border-bottom">{header}</h2>
-            <table className="table">
-                <TableHeader />
-                <tbody>
-                    {
-                        articles.map((feature, key) => {
+            
+            <div className="d-flex align-items-center justify-content-between mb-3">
+                <h2 className="mb-0">{header}</h2>
+                <span className="badge bg-primary">{articles.length} articles</span>
+            </div>
+            
+            <div className="table-responsive">
+                <table className="table">
+                    <TableHeader />
+                    <tbody>
+                        {
+                            articles.map((feature, key) => {
 
-                            const date = <span style={{ fontSize: '0.8em' }} className=''>
-                                <Link href={feature.link} passHref>{feature.date.replace('T', ' ').replace('Z', '').replace(/:\d\d$/, '')}</Link>
-                            </span>;
+                                const date = <span className='text-muted small'>
+                                    {feature.date.replace('T', ' ').replace('Z', '').replace(/:\d\d$/, '')}
+                                </span>;
 
-                            return <tr key={key}>
-                                <td>
-                                    <span style={{ fontSize: '1.5em' }}>{getSentiment(feature.sentiment)}</span>
-                                </td>
-                                <td>
-                                    <div>{feature.title}</div>
-                                    <div className="d-inline d-sm-none">{date}</div>
-                                </td>
-                                <td className='d-none d-md-table-cell'>
-                                    {date}
-                                </td>
-                            </tr>;
-                        })
-                    }
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <td colSpan='3'>
-                            <span className='text'>Articles are synced every 20 minutes. Evaluating sentiment is a slow process, so it may take a few minutes for the sentiment to appear.</span>
-                        </td>
-                    </tr>
-                </tfoot>
-            </table>
+                                return <tr key={key}>
+                                    <td className="text-center" style={{ fontSize: '1.75rem', width: '80px' }}>
+                                        {getSentiment(feature.sentiment)}
+                                    </td>
+                                    <td>
+                                        <Link href={feature.link} className="text-decoration-none" target="_blank" rel="noopener noreferrer">
+                                            <div className="fw-semibold text-dark mb-1">{feature.title}</div>
+                                            <div className="d-md-none">{date}</div>
+                                        </Link>
+                                    </td>
+                                    <td className='d-none d-md-table-cell text-end' style={{ width: '180px' }}>
+                                        {date}
+                                    </td>
+                                </tr>;
+                            })
+                        }
+                    </tbody>
+                </table>
+            </div>
+            
+            <div className="alert alert-info d-flex align-items-center mb-4" role="alert">
+                <svg className="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Info:">
+                    <use xlinkHref="#info-fill"/>
+                </svg>
+                <div className="small">
+                    Articles are synced every 20 minutes. Evaluating sentiment is a slow process, so it may take a few minutes for the sentiment to appear.
+                </div>
+            </div>
             
             {/* Pagination */}
             <Pagination currentPage={page} totalPages={TOTAL_PAGES} />
@@ -117,33 +129,39 @@ ArticleTable.propTypes = {
 
 export async function ArticleTableSkeleton() {
     return (
-        <div className='container px-4 py-0 my-3'>
+        <div className='container px-4 py-0 my-4'>
             <FrontPageCarouselSkeleton />
-            <h2 className="pb-2 border-bottom" id='features'>{header}</h2>
-            <table className="table">
-                <TableHeader />
-                <tbody>
-                    {range(1, 11).map(key => (
-                        <tr key={key}>
-                            <td>
-                                <div className="spinner-border spinner-border-sm text-primary" role="status">
-                                    <span className="sr-only" />
-                                </div>
-                            </td>
-                            <td>
-                                <div className="progress">
-                                    <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style={{ width: '100%' }}></div>
-                                </div>
-                            </td>
-                            <td className='d-none d-md-table-cell'>
-                                <div className="spinner-border spinner-border-sm text-primary" role="status">
-                                    <span className="sr-only" />
-                                </div>
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
+            
+            <div className="d-flex align-items-center justify-content-between mb-3">
+                <h2 className="mb-0">{header}</h2>
+            </div>
+            
+            <div className="table-responsive">
+                <table className="table">
+                    <TableHeader />
+                    <tbody>
+                        {range(1, 11).map(key => (
+                            <tr key={key}>
+                                <td className="text-center">
+                                    <div className="spinner-border spinner-border-sm text-primary" role="status">
+                                        <span className="visually-hidden">Loading...</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div className="progress" style={{ height: '24px' }}>
+                                        <div className="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style={{ width: '100%' }}></div>
+                                    </div>
+                                </td>
+                                <td className='d-none d-md-table-cell text-end'>
+                                    <div className="spinner-border spinner-border-sm text-primary" role="status">
+                                        <span className="visually-hidden">Loading...</span>
+                                    </div>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
         </div>
     );
 }
@@ -152,30 +170,28 @@ async function TableHeader() {
     return (
         <thead>
             <tr>
-                <th scope="col" className='col-1'>Sentiment</th>
-                <th scope="col" className='col-9'>Title</th>
-                <th scope="col" className='col-2 d-none d-md-table-cell'>Published</th>
+                <th scope="col" className='text-center'>Sentiment</th>
+                <th scope="col">Title</th>
+                <th scope="col" className='d-none d-md-table-cell text-end'>Published</th>
             </tr>
         </thead>
     );
 }
 
 async function FrontPageCarouselSkeleton() {
-
-    const skeletonStyles = {
-        alignItems: 'center',
-        display: 'flex',
-        justifyContent: 'center',
-    };
-
     return (
-        <Carousel style={{ boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)', height: '159px' }} interval={null} className='mb-2'>
-            <div className="carousel-item" key={1} style={{ ...carouselItemStyle, ...skeletonStyles }}>
-                <div className="spinner-border spinner-border-sm text-primary" role="status">
-                    <span className="sr-only" />
-                </div>
+        <div 
+            className='mb-4 d-flex align-items-center justify-content-center bg-white' 
+            style={{ 
+                borderRadius: '0.75rem', 
+                height: '200px',
+                boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)'
+            }}
+        >
+            <div className="spinner-border text-primary" role="status">
+                <span className="visually-hidden">Loading...</span>
             </div>
-        </Carousel>
+        </div>
     );
 }
 
@@ -183,16 +199,16 @@ async function FrontPageCarouselSkeleton() {
 function getBgColorByEmoji(emoji) {
     switch (emoji) {
         case '😭':
-            return 'bg-red-500';
+            return 'bg-danger';
         case '😔':
-            return 'bg-orange-500';
+            return 'bg-warning';
         case '😐':
-            return 'bg-yellow-500';
+            return 'bg-secondary';
         case '🙂':
-            return 'bg-lime-500';
+            return 'bg-info';
         case '😀':
-            return 'bg-green-500';
+            return 'bg-success';
         default:
-            return 'bg-gray-500';
+            return 'bg-secondary';
     }
 }

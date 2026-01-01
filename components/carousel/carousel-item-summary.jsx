@@ -10,29 +10,30 @@ const CarouselSummary = async ({ articles, summary }) => {
 
     const averageSentimentEmoji = getSentiment(averageSentiment);
 
-    const cardBodyStyle = {
-        maxHeight: '120px',
-        minHeight: '120px',
-        overflow: 'hidden',
-    };
-
     return (
-        <div className='mx-0 p-0'>
-            <div className="row row-cols-1 row-cols-2 g-2 mb-0">
-                <div className="col">
-                    <div className="card h-100">
-                        <div className="card-header">Average <span className='text-secondary' style={{ fontSize: '0.5em' }}>(out of 100)</span></div>
-                        <div className="card-body text-center m-0 p-0" style={cardBodyStyle}>
-                            <span style={{ fontSize: '2.5em' }}>{averageSentimentEmoji}</span>
+        <div className='p-3'>
+            <div className="row g-3">
+                <div className="col-12 col-md-6">
+                    <div className="card h-100 border-0 shadow-sm">
+                        <div className="card-header bg-white border-0">
+                            <h6 className="mb-0 fw-semibold">Average Sentiment</h6>
+                            <small className="text-muted">Out of 100</small>
+                        </div>
+                        <div className="card-body d-flex align-items-center justify-content-center" style={{ minHeight: '120px' }}>
+                            <div className="text-center">
+                                <div style={{ fontSize: '3.5rem', lineHeight: '1' }}>{averageSentimentEmoji}</div>
+                                <div className="mt-2 fw-semibold text-muted">{averageSentiment}/100</div>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div className="col">
-                    <div className="card h-100">
-                        <div className="card-header">
-                                Categories
+                <div className="col-12 col-md-6">
+                    <div className="card h-100 border-0 shadow-sm">
+                        <div className="card-header bg-white border-0">
+                            <h6 className="mb-0 fw-semibold">Categories</h6>
+                            <small className="text-muted">Sentiment distribution</small>
                         </div>
-                        <div className="card-body p-0 m-0 text-center" style={cardBodyStyle}>
+                        <div className="card-body" style={{ minHeight: '120px' }}>
                             <SummaryCategories summary={summary} />
                         </div>
                     </div>
@@ -66,21 +67,31 @@ async function SummaryCategories({ summary }) {
     const maxCount = Math.max((summary).map(category => category.count).reduce((a, b) => a + b, 0));
 
     return (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-            <div className="space-y-0">
-                {summary.map((category, index) => {
-                    return <div key={index} className="flex items-center w-32 sm:w-64">
-                        <span className="w-6 mr-2">{category.emoji}</span>
-                        <div className="flex-grow bg-gray-200 rounded-full h-4 overflow-hidden">
-                            <div className={`h-full ${category.color}`}
-                                style={{ width: `${(category.count / maxCount) * 100}%` }}
-                            ></div>
+        <div className="d-flex flex-column gap-2">
+            {summary.map((category, index) => {
+                const percentage = (category.count / maxCount) * 100;
+                return (
+                    <div key={index} className="d-flex align-items-center gap-2">
+                        <span style={{ fontSize: '1.25rem', minWidth: '28px' }}>{category.emoji}</span>
+                        <div className="flex-grow-1">
+                            <div className="progress" style={{ height: '24px', borderRadius: '0.5rem' }}>
+                                <div 
+                                    className={`progress-bar ${category.color}`}
+                                    role="progressbar"
+                                    style={{ width: `${percentage}%` }}
+                                    aria-valuenow={percentage}
+                                    aria-valuemin="0"
+                                    aria-valuemax="100"
+                                >
+                                </div>
+                            </div>
                         </div>
-                        <span className="ml-2 text-sm text-gray-600 w-10">{category.count}</span>
-                    </div>;
-                }
-                )}
-            </div>
+                        <span className="text-muted fw-semibold" style={{ minWidth: '32px', textAlign: 'right' }}>
+                            {category.count}
+                        </span>
+                    </div>
+                );
+            })}
         </div>
     );
 }
