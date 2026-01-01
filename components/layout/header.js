@@ -3,8 +3,10 @@
 import pjson from '../../package.json';
 import { Container, Modal, Nav, Navbar } from 'react-bootstrap';
 import Link from 'next/link';
+import { useState } from 'react';
 
 export default function Header() {
+    const [showModal, setShowModal] = useState(false);
 
     return (
         <header className="mb-4">
@@ -29,42 +31,44 @@ export default function Header() {
                                 <span className='d-inline d-sm-none'>POI</span>
                             </Link>
                             <Link href="/faq" className="nav-link d-none d-sm-inline">FAQ</Link>
-                            <span role='button' data-bs-toggle='modal' data-bs-target='#exampleModal' className='nav-link cursor-pointer'>About</span>
+                            <button 
+                                onClick={() => setShowModal(true)} 
+                                className='nav-link btn btn-link text-decoration-none p-0 border-0'
+                                style={{ background: 'none' }}
+                            >
+                                About
+                            </button>
                         </Nav>
                     </Navbar.Collapse>
                 </Container>
             </Navbar>
 
-            <div className="modal fade" id="exampleModal" tabIndex='-1' aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <Modal.Dialog className="modal-dialog">
-                    <div className="modal-content">
-                        <Modal.Header closeButton>
-                            <h5 className="modal-title fw-bold" id="exampleModalLabel">About {pjson.displayName} 📰</h5>
-                        </Modal.Header>
-                        <Modal.Body>
-                            <p className="mb-3">{pjson.description}</p>
-                            <div className="table-responsive">
-                                <table className="table table-sm">
-                                    <tbody>
-                                        <tr>
-                                            <th className="text-muted">Version:</th>
-                                            <td>{[process.env.NEXT_PUBLIC_NODE_ENV || process.env.NODE_ENV, pjson.version].join('-')}</td>
-                                        </tr>
-                                        <tr>
-                                            <th className="text-muted">GitHub:</th>
-                                            <td>
-                                                <Link href="https://github.com/jirihofman/sentiment-guardian" target="_blank" rel="noopener noreferrer">
-                                                    sentiment-guardian
-                                                </Link>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </Modal.Body>
+            <Modal show={showModal} onHide={() => setShowModal(false)} centered>
+                <Modal.Header closeButton>
+                    <Modal.Title className="fw-bold">About {pjson.displayName} 📰</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <p className="mb-3">{pjson.description}</p>
+                    <div className="table-responsive">
+                        <table className="table table-sm">
+                            <tbody>
+                                <tr>
+                                    <th className="text-muted">Version:</th>
+                                    <td>{[process.env.NEXT_PUBLIC_NODE_ENV || process.env.NODE_ENV, pjson.version].join('-')}</td>
+                                </tr>
+                                <tr>
+                                    <th className="text-muted">GitHub:</th>
+                                    <td>
+                                        <Link href="https://github.com/jirihofman/sentiment-guardian" target="_blank" rel="noopener noreferrer">
+                                            sentiment-guardian
+                                        </Link>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
-                </Modal.Dialog>
-            </div>
+                </Modal.Body>
+            </Modal>
         </header>
     );
 }
