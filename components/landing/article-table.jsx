@@ -27,15 +27,15 @@ const FrontPageCarousel = ({ articles, comments, summary, poiData }) => (
         className='mb-4'
         style={{ borderRadius: '0.75rem', overflow: 'hidden' }}
     >
-        <div className="carousel-item" style={carouselItemStyle}>
+        <Carousel.Item style={carouselItemStyle}>
             <CarouselSummary articles={articles} summary={summary} />
-        </div>
-        <div className="carousel-item" style={carouselItemStyle}>
+        </Carousel.Item>
+        <Carousel.Item style={carouselItemStyle}>
             <CarouselCommentary comments={comments} model={MODEL_GPT_SENTIMENT} />
-        </div>
-        <div className="carousel-item" style={carouselItemStyle}>
+        </Carousel.Item>
+        <Carousel.Item style={carouselItemStyle}>
             <CarouselPoi poiData={poiData} />
-        </div>
+        </Carousel.Item>
     </Carousel>
 );
 
