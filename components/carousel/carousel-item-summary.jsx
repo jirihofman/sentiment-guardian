@@ -13,13 +13,13 @@ const CarouselSummary = ({ articles, summary }) => {
     const averageSentimentEmoji = getSentiment(averageSentiment);
 
     return (
-        <div className='p-3'>
+        <div className='p-0'>
             <div className="row g-3">
                 <div className="col-12 col-md-6">
                     <div className="card h-100 border-0 shadow-sm">
                         <div className="card-header bg-white border-0">
                             <h6 className="mb-0 fw-semibold">Average Sentiment</h6>
-                            <small className="text-muted">Out of 100</small>
+                            <small className="text-muted my-0">Out of 100</small>
                         </div>
                         <div className="card-body d-flex align-items-center justify-content-center" style={{ minHeight: '120px' }}>
                             <div className="text-center">
@@ -33,9 +33,9 @@ const CarouselSummary = ({ articles, summary }) => {
                     <div className="card h-100 border-0 shadow-sm">
                         <div className="card-header bg-white border-0">
                             <h6 className="mb-0 fw-semibold">Categories</h6>
-                            <small className="text-muted">Sentiment distribution</small>
+                            <small className="text-muted my-0">Sentiment distribution</small>
                         </div>
-                        <div className="card-body" style={{ minHeight: '120px' }}>
+                        <div className="card-body -my-8" style={{ minHeight: '120px' }}>
                             <SummaryCategories summary={summary} />
                         </div>
                     </div>
@@ -69,14 +69,14 @@ function SummaryCategories({ summary }) {
     const maxCount = Math.max((summary).map(category => category.count).reduce((a, b) => a + b, 0));
 
     return (
-        <div className="d-flex flex-column gap-2">
+        <div className="d-flex flex-column gap-0 my-0">
             {summary.map((category, index) => {
                 const percentage = (category.count / maxCount) * 100;
                 return (
-                    <div key={index} className="d-flex align-items-center gap-2">
-                        <span style={{ fontSize: '1.25rem', minWidth: '28px' }}>{category.emoji}</span>
+                    <div key={index} className="d-flex align-items-center gap-2 -my-1">
+                        <span style={{ fontSize: '1.25rem', minWidth: '24px' }}>{category.emoji}</span>
                         <div className="flex-grow-1">
-                            <div className="progress" style={{ height: '24px', borderRadius: '0.5rem' }}>
+                            <div className="progress" style={{ height: '20px', borderRadius: '0.5rem' }}>
                                 <div 
                                     className={`progress-bar ${category.color}`}
                                     role="progressbar"
