@@ -33,9 +33,19 @@ const FrontPageCarousel = ({ articles, comments, summary, poiData, model }) => (
 );
 
 FrontPageCarousel.propTypes = {
-    articles: PropTypes.array.isRequired,
+    articles: PropTypes.arrayOf(
+        PropTypes.shape({
+            sentiment: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+        })
+    ).isRequired,
     comments: PropTypes.object.isRequired,
-    summary: PropTypes.array.isRequired,
+    summary: PropTypes.arrayOf(
+        PropTypes.shape({
+            color: PropTypes.string.isRequired,
+            count: PropTypes.number.isRequired,
+            emoji: PropTypes.string.isRequired,
+        })
+    ).isRequired,
     poiData: PropTypes.array,
     model: PropTypes.string.isRequired,
 };
