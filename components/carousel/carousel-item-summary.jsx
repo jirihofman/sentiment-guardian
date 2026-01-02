@@ -1,8 +1,10 @@
+'use client';
+
 import { getSentiment } from '../../util/util';
 import { toInteger } from 'lodash';
 import PropTypes from 'prop-types';
 
-const CarouselSummary = async ({ articles, summary }) => {
+const CarouselSummary = ({ articles, summary }) => {
 
     const averageSentiment = Math.round(articles
         .map(feature => toInteger(feature.sentiment))
@@ -62,7 +64,7 @@ CarouselSummary.propTypes = {
 export default CarouselSummary;
 
 /** Shows five emojis with variable font-size based on their ratio. */
-async function SummaryCategories({ summary }) {
+function SummaryCategories({ summary }) {
 
     const maxCount = Math.max((summary).map(category => category.count).reduce((a, b) => a + b, 0));
 
