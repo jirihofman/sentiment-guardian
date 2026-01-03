@@ -3,48 +3,12 @@ import Link from 'next/link';
 import range from 'lodash/range';
 import { getArticlesKvGuardian, getCategoriesSummaryKvGuardian, getCommentsKvGuardian, getPoiMonthlyKvGuardian } from '../../lib/data';
 import { getSentiment } from '../../util/util';
-import { Carousel } from 'react-bootstrap';
-import CarouselSummary from '../carousel/carousel-item-summary';
-import CarouselCommentary from '../carousel/carousel-item-commentary';
-import CarouselPoi from '../carousel/carousel-item-poi';
+import FrontPageCarousel from '../carousel/front-page-carousel';
 import { MODEL_GPT_SENTIMENT } from '../../lib/const';
 import Pagination from '../pagination';
 import PropTypes from 'prop-types';
 
 const header = 'Latest Guardian Headlines';
-
-const carouselItemStyle = {
-    maxHeight: '200px',
-    overflow: 'hidden',
-};
-
-const FrontPageCarousel = ({ articles, comments, summary, poiData }) => (
-    <Carousel 
-        controls={true} 
-        indicators={false} 
-        variant='dark' 
-        interval={null} 
-        className='mb-4'
-        style={{ borderRadius: '0.75rem', overflow: 'hidden' }}
-    >
-        <div className="carousel-item" style={carouselItemStyle}>
-            <CarouselSummary articles={articles} summary={summary} />
-        </div>
-        <div className="carousel-item" style={carouselItemStyle}>
-            <CarouselCommentary comments={comments} model={MODEL_GPT_SENTIMENT} />
-        </div>
-        <div className="carousel-item" style={carouselItemStyle}>
-            <CarouselPoi poiData={poiData} />
-        </div>
-    </Carousel>
-);
-
-FrontPageCarousel.propTypes = {
-    articles: PropTypes.array.isRequired,
-    comments: PropTypes.object.isRequired,
-    summary: PropTypes.object.isRequired,
-    poiData: PropTypes.array,
-};
 
 const ArticleTable = async ({ page = 1 }) => {
     const ITEMS_PER_PAGE = 20;
@@ -72,7 +36,7 @@ const ArticleTable = async ({ page = 1 }) => {
 
     return (
         <div className='container px-4 py-0 my-4'>
-            <FrontPageCarousel articles={articles} summary={summaryWithCounts} comments={comments} poiData={poiData} />
+            <FrontPageCarousel articles={articles} summary={summaryWithCounts} comments={comments} poiData={poiData} model={MODEL_GPT_SENTIMENT} />
             
             <div className="d-flex align-items-center justify-content-between mb-3">
                 <h2 className="mb-0">{header}</h2>
