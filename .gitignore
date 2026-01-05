@@ -48,4 +48,8 @@ yarn-error.log*
 /.stash
 
 README-*.md
+
+# batch processing temporary files
+scripts/poi-batch-*.jsonl
+scripts/poi-batch-*.txt
 .env.local
