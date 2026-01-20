@@ -7,13 +7,30 @@ const redis = new Redis({
     url: process.env.UPSTASH_REDIS_REST_URL,
 });
 
+interface Article {
+    date: string;
+    sentiment: string;
+}
+interface ArticleWithSentiment {
+    date: string,
+    sentiment: number
+}
+interface ChartData {
+    date: string,
+    sentiment: number
+}
+interface SentimentByDate {
+    total: number,
+    count: number
+}
+
 export async function GET() {
     try {
         // Get all articles with sentiment from Redis
-        const articles = await redis.zrange('article:guardian', 0, -1, { rev: true, withScores: false });
+        const articles: Article[] = await redis.zrange('article:guardian', 0, -1, { rev: true, withScores: false });
         
         // Filter articles that have sentiment data and process them
-        const articlesWithSentiment = articles
+        const articlesWithSentiment: ArticleWithSentiment[] = articles
             .filter(article => article.sentiment && article.sentiment !== undefined)
             .map(article => ({
                 date: new Date(article.date).toISOString().split('T')[0], // Extract date only (YYYY-MM-DD)
@@ -22,7 +39,7 @@ export async function GET() {
             .filter(article => !isNaN(article.sentiment)); // Remove invalid sentiment values
 
         // Group articles by date and calculate average sentiment per day
-        const sentimentByDate = articlesWithSentiment.reduce((acc, article) => {
+        const sentimentByDate: Record<string, SentimentByDate> = articlesWithSentiment.reduce((acc, article) => {
             if (!acc[article.date]) {
                 acc[article.date] = { count: 0, total: 0 };
             }
@@ -32,12 +49,12 @@ export async function GET() {
         }, {});
 
         // Calculate average sentiment per day and format for chart
-        const chartData = Object.entries(sentimentByDate)
+        const chartData: ChartData[] = Object.entries(sentimentByDate)
             .map(([date, data]) => ({
                 date,
                 sentiment: Math.round(data.total / data.count)
             }))
-            .sort((a, b) => new Date(a.date) - new Date(b.date)); // Sort by date ascending
+            .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()); // Sort by date ascending
 
         return new Response(JSON.stringify(chartData), {
             headers: { 'Content-Type': 'application/json' }
