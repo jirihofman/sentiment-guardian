@@ -4,6 +4,7 @@ import { Carousel } from 'react-bootstrap';
 import CarouselSummary from './carousel-item-summary';
 import CarouselCommentary from './carousel-item-commentary';
 import CarouselPoi from './carousel-item-poi';
+import CarouselEducational from './carousel-item-educational';
 import PropTypes from 'prop-types';
 
 const carouselItemStyle = {
@@ -28,6 +29,9 @@ const FrontPageCarousel = ({ articles, comments, summary, poiData, model }) => (
         </Carousel.Item>
         <Carousel.Item style={carouselItemStyle}>
             <CarouselPoi poiData={poiData} />
+        </Carousel.Item>
+        <Carousel.Item style={carouselItemStyle}>
+            <CarouselEducational />
         </Carousel.Item>
     </Carousel>
 );
