@@ -19,6 +19,7 @@
     "build": "next build",
     "start": "next start -p 5100",
     "lint": "next lint",
+    "typecheck": "tsc --noEmit",
     "test": "npm run test:coverage:jest",
     "test:jest": "node --experimental-vm-modules node_modules/jest/bin/jest.js --watch",
     "test:build": "NODE_ENV=test next build",
@@ -50,12 +51,15 @@
     "xml2js": "^0.6.2"
   },
   "devDependencies": {
-    "@types/react": "19.1.8",
+    "@types/node": "^25.0.9",
+    "@types/react": "^19.1.8",
+    "@types/react-dom": "^19.2.3",
     "encoding": "^0.1.13",
     "eslint": "9.39.2",
     "eslint-config-next": "16.1.1",
     "eslint-plugin-jest": "^29.12.0",
-    "jest": "latest"
+    "jest": "latest",
+    "typescript": "^5.9.3"
   },
   "nyc": {
     "report-dir": "coverage",

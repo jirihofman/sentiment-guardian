@@ -2,7 +2,7 @@
 // import { NextResponse } from 'next/server';
 import { revalidateTag } from 'next/cache';
 
-export async function POST(req) {
+export async function POST(req: Request) {
     const { adminApiKey } = await req.json();
 
     if (adminApiKey !== process.env.ADMIN_API_KEY) {
