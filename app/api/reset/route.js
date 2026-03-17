@@ -8,12 +8,8 @@ const redis = new Redis({
     url: process.env.UPSTASH_REDIS_REST_URL,
 });
 
-interface RequestBody {
-    adminApiKey: string;
-}
-
-export async function POST(req: Request) {
-    const { adminApiKey } = await req.json() as RequestBody;
+export async function POST(req) {
+    const { adminApiKey } = await req.json();
     const expectedKey = process.env.ADMIN_API_KEY;
     
     if (!adminApiKey || !expectedKey || 
