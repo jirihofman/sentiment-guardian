@@ -10,10 +10,10 @@ export default function Faq() {
             answer: <>
                 {pjson.description}
                 <span>
-                    {` It periodically (every ${articlesCheckedEveryXMinutes} minutes) loads headlines from The Guardian and evaluates their sentiment using OpenAI's `}
+                    {` It periodically (every ${articlesCheckedEveryXMinutes} minutes) loads headlines from The Guardian and evaluates their sentiment through OpenRouter using `}
                     <code className="px-2 py-1 bg-light rounded">{MODEL_GPT_SENTIMENT}</code>
                     {' '}
-                    <a href='https://platform.openai.com/docs/models' rel='noreferrer' target='_blank'>model</a>.
+                    <a href={`https://openrouter.ai/${MODEL_GPT_SENTIMENT}`} rel='noreferrer' target='_blank'>model</a>.
                 </span>
             </>,
             question: `What is ${pjson.displayName}?`,

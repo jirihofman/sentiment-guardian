@@ -52,4 +52,6 @@ README-*.md
 # batch processing temporary files
 scripts/poi-batch-*.jsonl
 scripts/poi-batch-*.txt
+scripts/poi-openrouter-batch-*.jsonl
+scripts/poi-openrouter-batch-*.txt
 .env.local

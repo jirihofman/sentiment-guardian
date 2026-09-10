@@ -1,4 +1,5 @@
-import OpenAI from 'openai';
+import { getOpenRouter } from '../../../lib/openrouter.js';
+import { MODEL_GPT_POI } from '../../../lib/const.js';
 import { Redis } from '@upstash/redis';
 
 const redis = new Redis({
@@ -80,7 +81,7 @@ export async function GET() {
 
 export async function POST(req) {
     // Check if required environment variables are available
-    if (!process.env.ADMIN_API_KEY || !process.env.OPENAI_API_KEY || !process.env.UPSTASH_REDIS_REST_URL) {
+    if (!process.env.ADMIN_API_KEY || !process.env.OPENROUTER_API_KEY || !process.env.UPSTASH_REDIS_REST_URL) {
         return new Response('Service temporarily unavailable', { status: 503 });
     }
 
@@ -95,11 +96,9 @@ export async function POST(req) {
 }
 
 async function doAllTheShitForAMonth(year, month) {
-    if (!process.env.OPENAI_API_KEY) {
-        throw new Error('OpenAI API key not configured');
+    if (!process.env.OPENROUTER_API_KEY) {
+        throw new Error('OpenRouter API key not configured');
     }
-    
-    const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
     if (!year && !month) {
         // Run for current month.
@@ -134,9 +133,10 @@ async function doAllTheShitForAMonth(year, month) {
         return 'No articles for: ' + start.toISOString() + ' - ' + end.toISOString();
     }
 
-    // Feed the articles to OpenAI to get the main theme.
-    const result = await openai.chat.completions.create({
-        model: 'gpt-4o-mini',
+    // Feed the articles to OpenRouter to get the main theme.
+    const result = await getOpenRouter().chat.completions.create({
+        model: MODEL_GPT_POI,
+        reasoning: { effort: 'low' },
         messages: [
             { role: 'system', content: 'What are the persons The Guardian is most obsessed with?' },
             { role: 'system', content: 'Select 3 names. Delimiter: ","' },

@@ -1,9 +1,20 @@
 # The Sentiment of The Guardian
-This app periodically loads headlines from The Guardian and evaluates their sentiment using OpenAI's GPT-4 model.
+This app periodically loads headlines from The Guardian and evaluates their sentiment through OpenRouter.
 
-It used to use GPT-3.5-turbo model but its results were not ideal. GPT-4 performs much better even though it is a bit pricier. To compensate for that we don't send article description anymore.
+## AI configuration
 
-Since 2023-11-30 `gpt-4-1106-preview` is used to save some bucks.
+Set `OPENROUTER_API_KEY` in `.env.local` and in your deployment environment. Direct OpenAI credentials are no longer used. The OpenAI SDK is retained as an OpenRouter-compatible HTTP client.
+
+Models are configured in `lib/const.js`:
+
+- Sentiment: `openai/gpt-5.6-luna`, with reasoning disabled for fast numeric classification.
+- Commentary: `openai/gpt-5.6-terra`, for concise creative synthesis, with reasoning disabled to preserve the short output budget.
+- Monthly persons of interest: `openai/gpt-5.6-terra`, with low reasoning for analysis across headlines.
+- Speech: `openai/gpt-4o-mini-tts-2025-12-15`, using the alloy voice and explicit MP3 output.
+
+Existing Redis keys are preserved so previously generated commentary and audio remain available.
+
+The regeneration script uses [OpenRouter's Batch API](https://openrouter.ai/docs/batch-quickstart). Run with `node --env-file=.env.local scripts/batch-poi-regenerate.js` and follow its help. Run `--prepare` again after migrating; old OpenAI batch IDs cannot be retrieved through OpenRouter. OpenRouter batch artifacts use separate filenames to preserve old job records. Submission sends inline requests; retrieval reads inline results and stores them in Redis.
 
 # Nextjs app template
 Based on [jirihofman/nextjs-fullstack-app-template](https://github.com/jirihofman/nextjs-fullstack-app-template).

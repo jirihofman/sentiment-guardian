@@ -1,10 +1,8 @@
 /* eslint-disable no-console */
-import OpenAI from 'openai';
+import { getOpenRouter } from '../../../lib/openrouter.js';
 import { Redis } from '@upstash/redis';
 import { getSentimentCategoryByNumber } from '../../../util/util';
 import { MODEL_GPT_SENTIMENT } from '../../../lib/const';
-
-const openai = new OpenAI();
 
 export const revalidate = 0;
 
@@ -25,16 +23,21 @@ async function doAllTheShit() {
             console.log('processed', processed, 'max', max);
             break;
         }
-        // Get sentiment from OpenAI for this article.
+        // Get sentiment from OpenRouter for this article.
         const message = `Determine sentiment of the following headline as a number from range 1-100. 100 is the most positive. Return only the number. Title: ${article.title}`;
         //  Article text is: ${article.description}
-        const chatCompletion = await openai.chat.completions.create({
+        const chatCompletion = await getOpenRouter().chat.completions.create({
             messages: [{ content: message, role: 'user' }],
             model: MODEL_GPT_SENTIMENT,
+            reasoning: { effort: 'none' },
+            max_tokens: 16,
             user: 'The Sentiment of The Guardian'
         });
         console.log('chatCompletion for article', article.title, chatCompletion.choices);
-        const sentiment = chatCompletion.choices[0].message.content;
+        const sentiment = chatCompletion.choices[0]?.message?.content?.trim();
+        if (!/^\d{1,3}$/.test(sentiment) || Number(sentiment) < 1 || Number(sentiment) > 100) {
+            throw new Error('OpenRouter returned an invalid sentiment score');
+        }
         console.log('sentiment', sentiment);
 
         // Delete the article from Redis.
@@ -62,6 +65,9 @@ async function doAllTheShit() {
 }
 
 export async function POST(req) {
+    if (!process.env.ADMIN_API_KEY || !process.env.OPENROUTER_API_KEY) {
+        return new Response('Service temporarily unavailable', { status: 503 });
+    }
 
     // read adminApiKey from request body.
     const { adminApiKey } = await req.json();
@@ -69,7 +75,6 @@ export async function POST(req) {
         const sentimentAdded = await doAllTheShit();
         return new Response(JSON.stringify(sentimentAdded, null, 4));
     } else {
-        console.log(process.env.ADMIN_API_KEY);
         return new Response('Unauthorized to perform this action', { status: 403 });
     }
 }

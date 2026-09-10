@@ -1,11 +1,9 @@
 /* eslint-disable no-console */
-import OpenAI from 'openai';
+import { getOpenRouter } from '../../../lib/openrouter.js';
 import { Redis } from '@upstash/redis';
 import { createClient } from '@supabase/supabase-js';
 import { revalidateTag } from 'next/cache';
-import { MODEL_GPT_COMMENTS } from '../../../lib/const';
-
-const openai = new OpenAI();
+import { MODEL_GPT_COMMENTS, MODEL_SPEECH } from '../../../lib/const';
 
 const redis = new Redis({
     token: process.env.UPSTASH_REDIS_REST_TOKEN,
@@ -43,8 +41,7 @@ Articles:
 ${articleTitles}
 `;
 
-    const chatCompletion = await openai.chat.completions.create({
-        frequency_penalty: 0,
+    const chatCompletion = await getOpenRouter().chat.completions.create({
         max_tokens: 96,
         messages: [
             { content: 'Newspaper headlines commentator with a quick wit and prone to sarcasm.', role: 'system' },
@@ -52,9 +49,7 @@ ${articleTitles}
             { content: prompt, role: 'user' }
         ],
         model: MODEL_GPT_COMMENTS,
-        presence_penalty: 0,
-        temperature: 1.43,
-        top_p: 1,
+        reasoning: { effort: 'none' },
         user: 'The sentiment of The Guardian',
     });
 
@@ -82,9 +77,10 @@ async function doAllTheSpeechShit() {
     const date = new Date(dateString);
     console.log('Got date', date);
     // Create speech of the comment.
-    const speechCompletion = await openai.audio.speech.create({
+    const speechCompletion = await getOpenRouter().audio.speech.create({
         input: comment,
-        model: 'tts-1-1106',
+        model: MODEL_SPEECH,
+        response_format: 'mp3',
         voice: 'alloy',
     });
     console.log('Created speech', speechCompletion);
@@ -114,6 +110,9 @@ async function doAllTheSpeechShit() {
 }
 
 export async function POST(req) {
+    if (!process.env.ADMIN_API_KEY || !process.env.OPENROUTER_API_KEY) {
+        return new Response('Service temporarily unavailable', { status: 503 });
+    }
 
     // read adminApiKey from request body.
     const { adminApiKey, mode } = await req.json();

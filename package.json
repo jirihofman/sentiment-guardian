@@ -4,7 +4,7 @@
     "name": "Jiří Hofman",
     "email": "jiri.hofman@gmail.com"
   },
-  "description": "Tracker of the sentiment of the Guardian latest headlines that also provides a commentary. Powered by OpenAI's GPT models.",
+  "description": "Tracker of the sentiment of the Guardian latest headlines that also provides a commentary. Powered by AI models through OpenRouter.",
   "displayName": "The Sentiment of The Guardian",
   "version": "0.8.0",
   "private": false,
@@ -19,7 +19,8 @@
     "build": "next build",
     "start": "next start -p 5100",
     "lint": "next lint",
-    "test": "npm run test:coverage:jest",
+    "test": "npm run test:coverage:jest && npm run test:openrouter",
+    "test:openrouter": "node --test tests/openrouter.test.js",
     "test:jest": "node --experimental-vm-modules node_modules/jest/bin/jest.js --watch",
     "test:build": "NODE_ENV=test next build",
     "test:start": "NODE_ENV=test next start -p 5100",

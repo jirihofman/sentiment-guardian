@@ -1,35 +1,34 @@
 /**
- * Script to regenerate all monthly POI data using OpenAI Batch API
+ * Script to regenerate all monthly POI data using OpenRouter Batch API
  * 
  * This script:
  * 1. Fetches all articles from Redis grouped by month
  * 2. Creates batch requests for each month
- * 3. Submits them to OpenAI Batch API (50% cost savings)
+ * 3. Submits them to OpenRouter Batch API
  * 4. Retrieves results and stores them back in Redis
  * 
  * Usage:
  *   node --env-file=.env.local scripts/batch-poi-regenerate.js --prepare   # Prepare batch file
- *   node --env-file=.env.local scripts/batch-poi-regenerate.js --submit    # Submit batch to OpenAI
+ *   node --env-file=.env.local scripts/batch-poi-regenerate.js --submit    # Submit batch to OpenRouter
  *   node --env-file=.env.local scripts/batch-poi-regenerate.js --status    # Check batch status
  *   node --env-file=.env.local scripts/batch-poi-regenerate.js --retrieve  # Retrieve and store results
  *   node --env-file=.env.local scripts/batch-poi-regenerate.js --single 2024-12  # Test single month (no batch)
  */
 
 import { Redis } from '@upstash/redis';
-import OpenAI from 'openai';
+import { getOpenRouter, requestBatch } from '../lib/openrouter.js';
+import { MODEL_GPT_POI } from '../lib/const.js';
 import fs from 'fs';
 import path from 'path';
 
-const BATCH_FILE_PATH = path.join(process.cwd(), 'scripts', 'poi-batch-input.jsonl');
-const BATCH_ID_FILE = path.join(process.cwd(), 'scripts', 'poi-batch-id.txt');
-const BATCH_OUTPUT_PATH = path.join(process.cwd(), 'scripts', 'poi-batch-output.jsonl');
+const BATCH_FILE_PATH = path.join(process.cwd(), 'scripts', 'poi-openrouter-batch-input.jsonl');
+const BATCH_ID_FILE = path.join(process.cwd(), 'scripts', 'poi-openrouter-batch-id.txt');
+const BATCH_OUTPUT_PATH = path.join(process.cwd(), 'scripts', 'poi-openrouter-batch-output.jsonl');
 
 const redis = new Redis({
     token: process.env.UPSTASH_REDIS_REST_TOKEN,
     url: process.env.UPSTASH_REDIS_REST_URL,
 });
-
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 /**
  * Parse a score like "20241201120000.000" into a Date
@@ -98,7 +97,8 @@ async function getArticlesByMonth() {
  */
 function createPoiPrompt(articles) {
     return {
-        model: 'gpt-4o-mini',
+        model: MODEL_GPT_POI,
+        reasoning: { effort: 'low' },
         messages: [
             { 
                 role: 'system', 
@@ -137,7 +137,7 @@ function createPoiPrompt(articles) {
 }
 
 /**
- * Prepare batch file for OpenAI Batch API
+ * Prepare batch file for OpenRouter Batch API
  */
 async function prepareBatch() {
     const articlesByMonth = await getArticlesByMonth();
@@ -163,11 +163,11 @@ async function prepareBatch() {
     fs.writeFileSync(BATCH_FILE_PATH, batchRequests.join('\n'));
     console.log(`\nBatch file created: ${BATCH_FILE_PATH}`);
     console.log(`Total requests: ${batchRequests.length}`);
-    console.log('\nNext step: Run with --submit to submit the batch to OpenAI');
+    console.log('\nNext step: Run with --submit to submit the batch to OpenRouter');
 }
 
 /**
- * Submit batch to OpenAI
+ * Submit batch to OpenRouter
  */
 async function submitBatch() {
     if (!fs.existsSync(BATCH_FILE_PATH)) {
@@ -175,23 +175,20 @@ async function submitBatch() {
         process.exit(1);
     }
 
-    console.log('Uploading batch file to OpenAI...');
-    
-    const file = await openai.files.create({
-        file: fs.createReadStream(BATCH_FILE_PATH),
-        purpose: 'batch'
-    });
-    
-    console.log(`File uploaded: ${file.id}`);
-
-    console.log('Creating batch...');
-    const batch = await openai.batches.create({
-        input_file_id: file.id,
+    const requests = fs.readFileSync(BATCH_FILE_PATH, 'utf-8').split('\n')
+        .filter(line => line.trim()).map(line => {
+            const { custom_id, body } = JSON.parse(line);
+            return { custom_id, body };
+        });
+    if (!requests.length) throw new Error('Batch input is empty. Run --prepare first.');
+    if (requests.some(request => request.body.model !== MODEL_GPT_POI)) {
+        throw new Error('Batch input uses an old model. Run --prepare again.');
+    }
+    console.log('Submitting batch to OpenRouter...');
+    const batch = await requestBatch('', {
         endpoint: '/v1/chat/completions',
-        completion_window: '24h',
-        metadata: {
-            description: 'POI monthly regeneration'
-        }
+        model: MODEL_GPT_POI,
+        requests,
     });
 
     fs.writeFileSync(BATCH_ID_FILE, batch.id);
@@ -211,7 +208,7 @@ async function checkStatus() {
     }
 
     const batchId = fs.readFileSync(BATCH_ID_FILE, 'utf-8').trim();
-    const batch = await openai.batches.retrieve(batchId);
+    const batch = await requestBatch(`/${encodeURIComponent(batchId)}`);
 
     console.log(`Batch ID: ${batch.id}`);
     console.log(`Status: ${batch.status}`);
@@ -221,12 +218,12 @@ async function checkStatus() {
     console.log(`  Failed: ${batch.request_counts.failed}`);
 
     if (batch.status === 'completed') {
-        console.log(`\nOutput file: ${batch.output_file_id}`);
+        console.log(`\nResults available: ${batch.results?.length ?? 0}`);
         console.log('\nNext step: Run with --retrieve to download and store results');
     } else if (batch.status === 'failed') {
         console.log('\nBatch failed!');
-        if (batch.errors) {
-            console.log('Errors:', JSON.stringify(batch.errors, null, 2));
+        if (batch.error) {
+            console.log('Errors:', JSON.stringify(batch.error, null, 2));
         }
     } else {
         console.log('\nBatch is still processing. Check again later.');
@@ -243,22 +240,18 @@ async function retrieveAndStore() {
     }
 
     const batchId = fs.readFileSync(BATCH_ID_FILE, 'utf-8').trim();
-    const batch = await openai.batches.retrieve(batchId);
+    const batch = await requestBatch(`/${encodeURIComponent(batchId)}`);
 
     if (batch.status !== 'completed') {
         console.error(`Batch status is "${batch.status}", not "completed". Wait for completion.`);
         process.exit(1);
     }
 
-    console.log('Downloading batch output...');
-    const fileResponse = await openai.files.content(batch.output_file_id);
-    const fileContent = await fileResponse.text();
-    
-    fs.writeFileSync(BATCH_OUTPUT_PATH, fileContent);
+    if (!Array.isArray(batch.results)) throw new Error('Completed batch has no results');
+    const lines = batch.results.map(result => JSON.stringify(result));
+    fs.writeFileSync(BATCH_OUTPUT_PATH, lines.join('\n'));
     console.log(`Output saved to: ${BATCH_OUTPUT_PATH}`);
 
-    // Parse and store results
-    const lines = fileContent.trim().split('\n');
     let successCount = 0;
     let errorCount = 0;
 
@@ -317,10 +310,10 @@ async function testSingleMonth(yearMonth) {
     console.log(`Found ${articles.length} articles:`);
     articles.forEach(a => console.log(`  - ${a.title}`));
 
-    // Call OpenAI directly (not batch)
-    console.log('\nCalling OpenAI...');
+    // Call OpenRouter directly (not batch)
+    console.log('\nCalling OpenRouter...');
     const prompt = createPoiPrompt(articles.map(a => ({ title: a.title })));
-    const result = await openai.chat.completions.create(prompt);
+    const result = await getOpenRouter().chat.completions.create(prompt);
     
     const content = JSON.parse(result.choices[0].message.content);
     console.log('\nResult:');
@@ -419,7 +412,7 @@ Usage:
 
 Commands:
   --prepare     Fetch articles and create batch input file
-  --submit      Upload batch file and submit to OpenAI
+  --submit      Submit prepared requests to OpenRouter
   --status      Check batch processing status
   --retrieve    Download results and store in Redis
   --single MM   Test single month (e.g., --single 2024-12)
@@ -430,7 +423,7 @@ Workflow:
   1. --list (optional) to see current data
   2. --delete-all (optional) to clear existing data
   3. --prepare to create batch file
-  4. --submit to send to OpenAI
+  4. --submit to send to OpenRouter
   5. --status to monitor progress
   6. --retrieve to store results
 
