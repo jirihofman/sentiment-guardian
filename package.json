@@ -32,7 +32,7 @@
     "test:coverage:jest": "NODE_ENV=test node --experimental-vm-modules node_modules/jest/bin/jest.js && cp jest-coverage/coverage-final.json reports/from-jest.json"
   },
   "dependencies": {
-    "@supabase/supabase-js": "^2.105.4",
+    "@supabase/supabase-js": "^2.110.0",
     "@tailwindcss/postcss": "^4.3.0",
     "@upstash/redis": "^1.38.0",
     "bootstrap": "^5.3.8",
