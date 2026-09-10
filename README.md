@@ -5,12 +5,18 @@ This app periodically loads headlines from The Guardian and evaluates their sent
 
 Set `OPENROUTER_API_KEY` in `.env.local` and in your deployment environment. Direct OpenAI credentials are no longer used. The OpenAI SDK is retained as an OpenRouter-compatible HTTP client.
 
-Models are configured in `lib/const.js`:
+Model IDs are configured in [`lib/const.js`](lib/const.js). All tasks use OpenRouter:
 
-- Sentiment: `openai/gpt-5.6-luna`, with reasoning disabled for fast numeric classification.
-- Commentary: `openai/gpt-5.6-terra`, for concise creative synthesis, with reasoning disabled to preserve the short output budget.
-- Monthly persons of interest: `openai/gpt-5.6-terra`, with low reasoning for analysis across headlines.
-- Speech: `openai/gpt-4o-mini-tts-2025-12-15`, using the alloy voice and explicit MP3 output.
+| Task | OpenRouter model ID | Reasoning | Output |
+| --- | --- | --- | --- |
+| Headline sentiment assessment | `openai/gpt-5.6-luna` | Disabled (`none`) | A validated score from 1 to 100 |
+| Headline commentary | `openai/gpt-5.6-terra` | Disabled (`none`) | Short commentary, capped at 96 output tokens |
+| Monthly persons of interest | `openai/gpt-5.6-terra` | Low (`low`) | Three people selected from the month's headlines, using structured JSON |
+| Commentary speech | `openai/gpt-4o-mini-tts-2025-12-15` | Not applicable | MP3 audio using the `alloy` voice |
+
+Luna handles numeric classification; Terra handles commentary and synthesis across headlines. Commentary reasoning is disabled to preserve its short output budget. Reasoning and speech settings are configured in the corresponding API routes.
+
+Sentiment backfills use Luna. Persons-of-interest backfills and regenerations use Terra, including the batch script and its `--single` mode. Updating a model default does not recalculate stored data; historical results retain their previous assessments until explicitly regenerated.
 
 Existing Redis keys are preserved so previously generated commentary and audio remain available.
 
