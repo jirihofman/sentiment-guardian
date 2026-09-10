@@ -39,6 +39,8 @@ jobs:
           ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-
     - name: Install 🛠
       run: npm ci
+    - name: Typecheck
+      run: npm run typecheck
     - run: npm run pretest
     - run: npm run test:coverage:prepare-folders
     - run: npm run test:coverage:jest
