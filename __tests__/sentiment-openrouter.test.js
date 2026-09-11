@@ -23,7 +23,7 @@ afterAll(() => {
 test('uses Luna and stores a valid score', async () => {
     create.mockResolvedValue({ choices: [{ message: { content: ' 85 ' } }] });
     expect((await POST(req())).status).toBe(200);
-    expect(create).toHaveBeenCalledWith(expect.objectContaining({ model: 'openai/gpt-5.6-luna', reasoning: { effort: 'none' } }));
+    expect(create).toHaveBeenCalledWith(expect.objectContaining({ model: 'openai/gpt-5.6-luna', service_tier: 'flex', reasoning: { effort: 'none' } }));
     expect(JSON.parse(redis.zadd.mock.calls[0][1].member).sentiment).toBe('85');
 });
 test.each(['101', '0', 'positive', '', null])('rejects invalid score %s before database writes', async content => {

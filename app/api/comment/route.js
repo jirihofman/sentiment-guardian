@@ -49,6 +49,7 @@ ${articleTitles}
             { content: prompt, role: 'user' }
         ],
         model: MODEL_GPT_COMMENTS,
+        service_tier: 'flex',
         reasoning: { effort: 'none' },
         user: 'The sentiment of The Guardian',
     });

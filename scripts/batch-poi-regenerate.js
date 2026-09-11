@@ -313,7 +313,7 @@ async function testSingleMonth(yearMonth) {
     // Call OpenRouter directly (not batch)
     console.log('\nCalling OpenRouter...');
     const prompt = createPoiPrompt(articles.map(a => ({ title: a.title })));
-    const result = await getOpenRouter().chat.completions.create(prompt);
+    const result = await getOpenRouter().chat.completions.create({ ...prompt, service_tier: 'flex' });
     
     const content = JSON.parse(result.choices[0].message.content);
     console.log('\nResult:');

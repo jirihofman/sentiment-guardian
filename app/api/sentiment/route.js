@@ -29,6 +29,7 @@ async function doAllTheShit() {
         const chatCompletion = await getOpenRouter().chat.completions.create({
             messages: [{ content: message, role: 'user' }],
             model: MODEL_GPT_SENTIMENT,
+            service_tier: 'flex',
             reasoning: { effort: 'none' },
             max_tokens: 16,
             user: 'The Sentiment of The Guardian'

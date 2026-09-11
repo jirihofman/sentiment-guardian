@@ -136,6 +136,7 @@ async function doAllTheShitForAMonth(year, month) {
     // Feed the articles to OpenRouter to get the main theme.
     const result = await getOpenRouter().chat.completions.create({
         model: MODEL_GPT_POI,
+        service_tier: 'flex',
         reasoning: { effort: 'low' },
         messages: [
             { role: 'system', content: 'What are the persons The Guardian is most obsessed with?' },

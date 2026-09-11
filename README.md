@@ -16,6 +16,8 @@ Model IDs are configured in [`lib/const.js`](lib/const.js). All tasks use OpenRo
 
 Luna handles numeric classification; Terra handles commentary and synthesis across headlines. Commentary reasoning is disabled to preserve its short output budget. Reasoning and speech settings are configured in the corresponding API routes.
 
+Synchronous sentiment, commentary, and monthly persons-of-interest requests ask OpenRouter for `service_tier: "flex"`, including the regeneration script's `--single` mode. [Flex processing](https://openrouter.ai/docs/guides/features/service-tiers) trades latency and availability for lower cost. Capacity errors can surface without standard-tier fallback; if a model has no Flex endpoints, OpenRouter may route at standard rates. The response's `service_tier` reports the tier actually served. Speech and Batch API requests do not set this parameter; batch processing has its own pricing.
+
 Sentiment backfills use Luna. Persons-of-interest backfills and regenerations use Terra, including the batch script and its `--single` mode. Updating a model default does not recalculate stored data; historical results retain their previous assessments until explicitly regenerated.
 
 Existing Redis keys are preserved so previously generated commentary and audio remain available.

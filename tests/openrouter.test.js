@@ -20,11 +20,12 @@ for (const model of new Set([MODEL_GPT_SENTIMENT, MODEL_GPT_COMMENTS, MODEL_GPT_
     const fetchMock = mock.method(globalThis, 'fetch', async () => (new Response(JSON.stringify({
         choices: [{ message: { content: '75' } }],
     }), { headers: { 'Content-Type': 'application/json' } })));
-    const response = await getOpenRouter().chat.completions.create({ model, messages: [{ role: 'user', content: 'A headline' }] });
+    const response = await getOpenRouter().chat.completions.create({ model, service_tier: 'flex', messages: [{ role: 'user', content: 'A headline' }] });
     const [url, options] = fetchMock.mock.calls[0].arguments;
     assert.equal(String(url), 'https://openrouter.ai/api/v1/chat/completions');
     assert.equal(new Headers(options.headers).get('authorization'), 'Bearer test-router-key');
     assert.equal(JSON.parse(options.body).model, model);
+    assert.equal(JSON.parse(options.body).service_tier, 'flex');
     assert.equal(response.choices[0].message.content, '75');
 });
 
