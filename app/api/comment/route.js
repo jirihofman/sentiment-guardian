@@ -42,7 +42,8 @@ ${articleTitles}
 `;
 
     const chatCompletion = await getOpenRouter().chat.completions.create({
-        max_tokens: 96,
+        // GLM requires reasoning; the allowance includes reasoning and visible output.
+        max_tokens: 2048,
         messages: [
             { content: 'Newspaper headlines commentator with a quick wit and prone to sarcasm.', role: 'system' },
             // { content: 'Newspaper headlines commentator with a nihilistic view.', role: 'system' },
@@ -50,7 +51,7 @@ ${articleTitles}
         ],
         model: MODEL_GPT_COMMENTS,
         service_tier: 'flex',
-        reasoning: { effort: 'none' },
+        reasoning: { effort: 'low' },
         user: 'The sentiment of The Guardian',
     });
 
