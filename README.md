@@ -11,16 +11,16 @@ Model IDs are configured in [`lib/const.js`](lib/const.js). All tasks use OpenRo
 | --- | --- | --- | --- |
 | Headline sentiment assessment | `qwen/qwen3-30b-a3b-instruct-2507` | Disabled (`none`) | A validated score from 1 to 100 |
 | Headline commentary | `z-ai/glm-5.3` | Low (`low`) | Short commentary, with a 2,048-token allowance shared by reasoning and output |
-| Monthly persons of interest | `openai/gpt-5.6-terra` | Low (`low`) | Three people selected from the month's headlines, using structured JSON |
+| Monthly persons of interest | `openai/gpt-6-luna` | Low (`low`) | Three people selected from the month's headlines, using structured JSON |
 | Commentary speech | `openai/gpt-4o-mini-tts-2025-12-15` | Not applicable | MP3 audio using the `alloy` voice |
 
-Qwen handles numeric classification; GLM handles commentary; Terra handles monthly synthesis across headlines. GLM requires reasoning, so commentary uses low reasoning with a larger token allowance. Reasoning and speech settings are configured in the corresponding API routes.
+Qwen handles numeric classification; GLM handles commentary; GPT-6 Luna handles monthly synthesis across headlines. GLM requires reasoning, so commentary uses low reasoning with a larger token allowance. Reasoning and speech settings are configured in the corresponding API routes.
 
-The September 17, 2026 benchmark measured 26% lower commentary cost with GLM than Terra Flex across three repeats of the same headlines. This saving depended on cache hits: without cache discounts, the observed outputs would cost approximately the same. Monthly prompts showed no cost savings and remain on Terra.
+The September 17, 2026 benchmark measured 26% lower commentary cost with GLM than Terra Flex across three repeats of the same headlines. This saving depended on cache hits: without cache discounts, the observed outputs would cost approximately the same. Monthly prompts showed no cost savings in that benchmark. Monthly analysis now uses GPT-6 Luna.
 
 Synchronous sentiment, commentary, and monthly persons-of-interest requests ask OpenRouter for `service_tier: "flex"`, including the regeneration script's `--single` mode. [Flex processing](https://openrouter.ai/docs/guides/features/service-tiers) trades latency and availability for lower cost. Capacity errors can surface without standard-tier fallback; if a model has no Flex endpoints, OpenRouter may route at standard rates. The response's `service_tier` reports the tier actually served. Speech and Batch API requests do not set this parameter; batch processing has its own pricing.
 
-Sentiment backfills use Qwen. Persons-of-interest backfills and regenerations use Terra, including the batch script and its `--single` mode. Updating a model default does not recalculate stored data; historical results retain their previous assessments until explicitly regenerated.
+Sentiment backfills use Qwen. Persons-of-interest backfills and regenerations use GPT-6 Luna, including the batch script and its `--single` mode. Updating a model default does not recalculate stored data; historical results retain their previous assessments until explicitly regenerated.
 
 Existing Redis keys are preserved so previously generated commentary and audio remain available.
 
