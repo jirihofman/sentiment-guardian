@@ -1,7 +1,7 @@
 {
   "name": "the-sentiment-of-the-guardian",
   "author": {
-    "name": "Jiří Hofman",
+    "name": "Ji\u0159\u00ed Hofman",
     "email": "jiri.hofman@gmail.com"
   },
   "description": "Tracker of the sentiment of the Guardian latest headlines that also provides a commentary. Powered by AI models through OpenRouter.",
@@ -11,7 +11,7 @@
   "license": "MIT",
   "type": "module",
   "engines": {
-    "node": ">=20.0.0",
+    "node": ">=22.0.0",
     "npm": ">=8.0.0"
   },
   "scripts": {
@@ -34,7 +34,7 @@
     "typecheck": "next typegen && tsc --noEmit"
   },
   "dependencies": {
-    "@supabase/supabase-js": "~2.109.0",
+    "@supabase/supabase-js": "^2.117.2",
     "@tailwindcss/postcss": "^4.3.3",
     "@upstash/redis": "^1.39.0",
     "bootstrap": "^5.3.8",

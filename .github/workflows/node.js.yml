@@ -7,7 +7,6 @@ on:
   push:
     branches: [ "main", "master" ]
   pull_request:
-    branches: [ "main", "master" ]
 
 env:
   # Replaces the value set in .env.test.local
@@ -21,10 +20,10 @@ jobs:
     timeout-minutes: 7
     steps:
     - uses: actions/checkout@v4
-    - name: Use Node.js ${{ matrix.node-version }}
+    - name: Use supported Node.js LTS
       uses: actions/setup-node@v3
       with:
-        node-version: ${{ matrix.node-version }}
+        node-version-file: .nvmrc
         cache: 'npm'
     - uses: actions/cache@v4
       with:
